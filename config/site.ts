@@ -9,6 +9,10 @@ export const siteConfig = {
       title: "Home",
       href: "/",
     },
+    {
+      title: "Search Methods",
+      href: "/search-methods/playground",
+    }
   ],
   links: {
     github: "https://github.com/spigelli/search-methods-assignment",

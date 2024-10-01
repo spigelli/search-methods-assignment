@@ -85,8 +85,8 @@ export default function SearchMethodsPlaygroundPage() {
           </Button>
         </form>
       </div>
-      <div className="relative flex h-full min-h-[50vh] flex-1 flex-col rounded-xl bg-muted/50 p-4 mt-4 md:mt-0">
-        <div className="text-lg font-semibold mb-2">Search Results</div>
+      <div className="relative mt-4 flex h-full min-h-[50vh] flex-1 flex-col rounded-xl bg-muted/50 p-4 md:mt-0">
+        <div className="mb-2 text-lg font-semibold">Search Results</div>
         <div className="flex-1 overflow-auto rounded-md border bg-background p-4">
           <p className="text-muted-foreground">Run a search to see the results...</p>
         </div>

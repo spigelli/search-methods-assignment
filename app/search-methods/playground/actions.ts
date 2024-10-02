@@ -34,8 +34,28 @@ async function parseCoordinates() {
   }
 }
 
+const adjacencySchema = z.array(z.tuple([z.string(), z.string()]))
+
+const parseAdjacencies = async () => {
+  const filePath = path.join(process.cwd(), 'public', 'Adjacencies.txt')
+  try {
+    const fileContent = await fs.readFile(filePath, 'utf-8')
+    const lines = fileContent.split('\n')
+    // Some of the lines contain trailing whitespace, so we trim them
+    const trimmedLines = lines.map((line) => line.trim())
+    return adjacencySchema.parse(
+      trimmedLines.map((line) => line.split(' '))
+    )
+  } catch (error) {
+    console.error('Error reading or parsing adjacency file:', error)
+    throw new Error('Failed to read or parse adjacency file')
+  }
+}
+
 export async function getCityTree() {
   const coordinates = await parseCoordinates()
   console.log(coordinates)
+  const adjacencies = await parseAdjacencies()
+  console.log(adjacencies)
   return 1
 }

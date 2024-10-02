@@ -83,8 +83,8 @@ export function GraphCard({
     const newNodes = graphData.coordinates.map((coordinate) => ({
       id: coordinate.name,
       position: {
-        x: coordinate.latitude * scaleFactor,
-        y: coordinate.longitude * scaleFactor,
+        x: coordinate.longitude * scaleFactor,
+        y: -1 * coordinate.latitude * scaleFactor,
       },
       data: { label: coordinate.name.replace('_', ' ') },
       type: 'default',

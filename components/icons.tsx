@@ -2,12 +2,13 @@ import {
   Download,
   LucideProps,
   Moon,
+  SquareArrowOutUpRight,
   SunMedium,
   Twitter,
   type Icon as LucideIcon,
 } from "lucide-react"
 
-export type Icon = LucideIcon
+export type Icon = typeof LucideIcon
 
 export const Icons = {
   sun: SunMedium,
@@ -30,4 +31,5 @@ export const Icons = {
     </svg>
   ),
   download: Download,
+  newPage: SquareArrowOutUpRight,
 }

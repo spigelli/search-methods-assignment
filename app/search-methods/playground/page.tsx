@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Link from "next/link";
+import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 const towns = [
   "Abilene", "Andover", "Anthony", "Argonia", "Attica", "Augusta", "Bluff_City", "Caldwell", 
@@ -30,26 +32,35 @@ export default function SearchMethodsPlaygroundPage() {
               Sources
             </legend>
             <div className="grid grid-cols-2 gap-4">
-              <Link
-                href="/coordinates.csv"
-                target="_blank"
-                className={buttonVariants({
-                  size: "default",
-                  variant: "link",
-                })}
+              <Button
+                variant="link"
+                size="default"
+                asChild
               >
-                Coordinates
-              </Link>
-              <Link
-                href="/Adjacencies.txt"
-                target="_blank"
-                className={buttonVariants({
-                  size: "default",
-                  variant: "link",
-                })}
+                <Link
+                  href="/coordinates.csv"
+                  target="_blank"
+                >
+                  Coordinates
+                  <Icons.download className="ml-1 size-4" />
+                </Link>
+              </Button>
+              <Button
+                variant="link"
+                asChild
               >
-                Adjacencies
-              </Link>
+                <Link
+                  href="/Adjacencies.txt"
+                  target="_blank"
+                  className={buttonVariants({
+                    size: "default",
+                    variant: "link",
+                  })}
+                >
+                  Adjacencies
+                  <Icons.newPage className="ml-1 size-4" />
+                </Link>
+              </Button>
             </div>
           </fieldset>
           <fieldset className="grid gap-6 rounded-lg border p-4">

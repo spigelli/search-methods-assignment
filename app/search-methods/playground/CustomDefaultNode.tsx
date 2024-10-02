@@ -1,4 +1,4 @@
-import { NodeProps, type Node as ReactFlowNode } from '@xyflow/react';
+import { Handle, NodeProps, type Node as ReactFlowNode } from '@xyflow/react';
 
 export type CustomDefaultNode = ReactFlowNode<
   {
@@ -14,6 +14,8 @@ export function CustomDefaultNode({
 }: NodeProps<CustomDefaultNode>) {
 
   return(
-    <div>{label}</div>
+    <div>
+      {label}
+    </div>
   );
 }

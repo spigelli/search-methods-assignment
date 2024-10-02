@@ -43,9 +43,16 @@ const parseAdjacencies = async () => {
     const lines = fileContent.split('\n')
     // Some of the lines contain trailing whitespace, so we trim them
     const trimmedLines = lines.map((line) => line.trim())
-    return adjacencySchema.parse(
+    const formattedAdjacencies = adjacencySchema.parse(
       trimmedLines.map((line) => line.split(' '))
     )
+    // Deduplicate the edges if the reverse edge is also present
+    return formattedAdjacencies.filter(
+      ([source, target], index, self) => (
+        self.findIndex(([s, t]) => s === target && t === source) === -1
+      )
+    )
+
   } catch (error) {
     console.error('Error reading or parsing adjacency file:', error)
     throw new Error('Failed to read or parse adjacency file')

@@ -7,12 +7,19 @@ import {
   type Node as ReactFlowNode,
   type Edge,
   ReactFlowProps,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Connection,
+  MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './style-overrides.css';
 import { CustomDefaultNode } from './CustomDefaultNode';
+import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
+import FloatingConnectionLine from '@/components/react-flow/FloatingConnectionLine';
 
 const scaleFactor = 1000;
 
@@ -38,14 +45,35 @@ function getCartesianDistance(
   );
 }
 
+const edgeTypes = {
+  'floating': FloatingEdge,
+};
+
 export function GraphCard({
   graphData
 }: {
   graphData: GraphData | null;
 }) {
-  const [nodes, setNodes] = useState<ReactFlowNode[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
   const { theme } = useTheme();
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<ReactFlowNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const onConnect = useCallback(
+    (params: Edge | Connection) =>
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...params,
+            type: 'floating',
+            markerEnd: { type: MarkerType.Arrow },
+          },
+          eds,
+        ),
+      ),
+    [setEdges],
+  );
+
 
   useEffect(() => {
     if (graphData === null) {
@@ -67,7 +95,7 @@ export function GraphCard({
       id: `edge-${source}-${target}-${index}`,
       source,
       target,
-      type: 'simplebezier',
+      type: 'floating',
       label: `${getCartesianDistance(graphData.coordinates, source, target).toFixed(2)} km`,
     }));
 
@@ -87,9 +115,12 @@ export function GraphCard({
               edges={edges}
               style={{ height: '100%' }}
               colorMode={theme === 'dark' ? 'dark' : 'light'}
-              // nodeTypes={{
-              //   default: CustomDefaultNode,
-              // }}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              // @ts-ignore
+              edgeTypes={edgeTypes}
+              connectionLineComponent={FloatingConnectionLine}
             >
               <Background />
               <Controls />

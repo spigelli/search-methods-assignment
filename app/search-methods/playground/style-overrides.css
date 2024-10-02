@@ -1,0 +1,16 @@
+/* Dark mode css variable over-rides */
+/* .react-flow.dark .react-flow__background {
+  background-color: red;
+} */
+/* Dark mode css variable over-rides */
+.react-flow .react-flow__background {
+  background-color: hsl(var(--background));
+}
+
+.react-flow__background-pattern.dots {
+  fill: hsl(var(--muted-foreground));
+}
+
+:root {
+  --xy-controls-button-border-color: hsl(var(--border));
+}

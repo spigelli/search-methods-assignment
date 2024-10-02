@@ -14,7 +14,7 @@ const towns = [
 
 export function SearchForm() {
   return (
-    <form className="grid w-full items-start gap-4">
+    <form className="grid w-full items-start gap-2">
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
           Search Algorithm Settings

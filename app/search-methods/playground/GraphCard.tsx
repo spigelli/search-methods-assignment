@@ -15,7 +15,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useTheme } from 'next-themes';
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import './style-overrides.css';
 import { CustomDefaultNode } from './CustomDefaultNode';
 import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
@@ -103,31 +103,21 @@ export function GraphCard({
   }, [graphData]);
 
   return (
-    <div className="relative mt-4 flex h-[80vh] flex-1 flex-col rounded-xl bg-muted/50 p-4 md:mt-0">
-      <div className="mb-2 text-lg font-semibold">Search Results</div>
-      <div className="flex-1 overflow-hidden rounded-md border bg-background">
-        {graphData === null ? (
-          <p className="text-muted-foreground">Run a search to see the results...</p>
-        ) : (
-          <div className="h-full">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              style={{ height: '100%' }}
-              colorMode={theme === 'dark' ? 'dark' : 'light'}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              // @ts-ignore
-              edgeTypes={edgeTypes}
-              connectionLineComponent={FloatingConnectionLine}
-            >
-              <Background />
-              <Controls />
-            </ReactFlow>
-          </div>
-        )}
-      </div>
-    </div>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      style={{ height: '100%' }}
+      colorMode={theme === 'dark' ? 'dark' : 'light'}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      // @ts-ignore
+      edgeTypes={edgeTypes}
+      connectionLineComponent={FloatingConnectionLine}
+      fitView
+    >
+      <Background />
+      <Controls />
+    </ReactFlow>
   );
 }

@@ -9,19 +9,19 @@ export function PopulateForm({
   action: (formData: FormData) => void | Promise<void>;
 }) {
   return (
-    <form className="grid w-full items-start gap-4" action={action}>
+    <form className="grid w-full items-start gap-2" action={action}>
       <fieldset className="rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
           Sources
         </legend>
         <div className="grid grid-cols-2 gap-4">
-          <Button variant="link" size="default" asChild>
+          <Button className="px-2" variant="secondary" size="default" asChild>
             <Link href="/coordinates.csv" target="_blank">
               Coordinates
               <Icons.download className="ml-1 size-4" />
             </Link>
           </Button>
-          <Button variant="link" asChild>
+          <Button className="px-2" variant="secondary" size="default" asChild>
             <Link href="/Adjacencies.txt" target="_blank" className={buttonVariants({
               size: "default",
               variant: "link"

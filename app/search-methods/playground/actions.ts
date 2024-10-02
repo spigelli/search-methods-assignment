@@ -52,10 +52,9 @@ const parseAdjacencies = async () => {
   }
 }
 
-export async function getCityTree() {
+export async function getGraphData() {
   const coordinates = await parseCoordinates()
-  console.log(coordinates)
   const adjacencies = await parseAdjacencies()
-  console.log(adjacencies)
-  return 1
+  return { coordinates, adjacencies }
 }
+export type GraphData = Awaited<ReturnType<typeof getGraphData>>;

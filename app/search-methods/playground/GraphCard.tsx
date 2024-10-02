@@ -1,4 +1,3 @@
-// import { cn } from '@/lib/utils';
 import { GraphData } from './actions';
 import {
   Background,
@@ -6,16 +5,14 @@ import {
   ReactFlow,
   type Node as ReactFlowNode,
   type Edge,
-  ReactFlowProps,
   useNodesState,
   useEdgesState,
   addEdge,
   Connection,
   MarkerType,
 } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 import { useTheme } from 'next-themes';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import './style-overrides.css';
 import { CustomDefaultNode } from './CustomDefaultNode';
 import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
@@ -44,6 +41,8 @@ function getCartesianDistance(
       Math.pow(sourceCoordinate.longitude - targetCoordinate.longitude, 2)
   );
 }
+
+const nodeTypes = { default: CustomDefaultNode }
 
 const edgeTypes = {
   'floating': FloatingEdge,
@@ -113,6 +112,7 @@ export function GraphCard({
       onConnect={onConnect}
       // @ts-ignore
       edgeTypes={edgeTypes}
+      nodeTypes={nodeTypes}
       connectionLineComponent={FloatingConnectionLine}
       fitView
     >

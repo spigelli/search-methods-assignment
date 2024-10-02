@@ -14,3 +14,26 @@
 :root {
   --xy-controls-button-border-color: hsl(var(--border));
 }
+
+.dark .react-flow {
+  --xy-edge-stroke-default: theme('colors.zinc.700');
+  --xy-edge-stroke-selected-default: theme('colors.zinc.500');
+  --xy-node-border-default: 1px solid theme('colors.zinc.800');
+  --xy-edge-label-background-color: theme('colors.zinc.900');
+  --xy-edge-label-background-color-default: theme('colors.zinc.900');
+  --xy-edge-label-color-default: theme('colors.zinc.100');
+}
+
+
+
+.dark .react-flow__node {
+  background-color: theme('colors.zinc.900');
+  --xy-node-border-default: 1px solid theme('colors.zinc.800');
+  --xy-edge-stroke-default: theme('colors.zinc.700');
+  --xy-edge-stroke-selected-default: theme('colors.zinc.500');
+}
+
+.react-flow__handle {
+  background-color: transparent;
+  border: unset;
+}

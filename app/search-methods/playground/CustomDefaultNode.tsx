@@ -1,4 +1,5 @@
-import { Handle, NodeProps, type Node as ReactFlowNode } from '@xyflow/react';
+import { Handle, NodeProps, Position, type Node as ReactFlowNode } from '@xyflow/react';
+import { Fragment } from 'react';
 
 export type CustomDefaultNode = ReactFlowNode<
   {
@@ -14,8 +15,12 @@ export function CustomDefaultNode({
 }: NodeProps<CustomDefaultNode>) {
 
   return(
-    <div>
-      {label}
-    </div>
+    <Fragment>
+      <Handle type="source" position={Position.Top} />
+      <div>
+        {label}
+      </div>
+      <Handle type="target" position={Position.Bottom} />
+    </Fragment>
   );
 }

@@ -2,6 +2,7 @@
 import { promises as fs } from 'fs';
 import path from "path";
 import { parse } from 'csv-parse/sync';
+import { z } from 'zod';
 
 async function parseCoordinates() {
 // Construct the full path to the CSV file in the public folder
@@ -12,11 +13,21 @@ async function parseCoordinates() {
 
     // Parse the CSV content
     const records = parse(fileContent, {
-      columns: true, // Treat the first row as header
+      columns: ['name', 'latitude', 'longitude'], // Treat the first row as header
+      onRecord: (record) => {
+        record.latitude = parseFloat(record.latitude)
+        record.longitude = parseFloat(record.longitude)
+        return record
+      },
       skip_empty_lines: true
     })
 
-    return records
+    const recordsSchema = z.array(z.object({
+      name: z.string(),
+      latitude: z.number(),
+      longitude: z.number()
+    }))
+    return recordsSchema.parse(records)
   } catch (error) {
     console.error('Error reading or parsing CSV file:', error)
     throw new Error('Failed to read or parse CSV file')

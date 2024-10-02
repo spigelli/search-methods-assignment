@@ -1,5 +1,5 @@
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Link from "next/link";
 
 const towns = [
   "Abilene", "Andover", "Anthony", "Argonia", "Attica", "Augusta", "Bluff_City", "Caldwell", 
@@ -24,6 +25,33 @@ export default function SearchMethodsPlaygroundPage() {
     <div className="flex min-h-screen w-full flex-col p-4 md:flex-row md:gap-4">
       <div className="w-full md:w-1/3">
         <form className="grid w-full items-start gap-6">
+          <fieldset className="rounded-lg border p-4">
+            <legend className="-ml-1 px-1 text-sm font-medium">
+              Sources
+            </legend>
+            <div className="grid grid-cols-2 gap-4">
+              <Link
+                href="/coordinates.csv"
+                target="_blank"
+                className={buttonVariants({
+                  size: "default",
+                  variant: "link",
+                })}
+              >
+                Coordinates
+              </Link>
+              <Link
+                href="/Adjacencies.txt"
+                target="_blank"
+                className={buttonVariants({
+                  size: "default",
+                  variant: "link",
+                })}
+              >
+                Adjacencies
+              </Link>
+            </div>
+          </fieldset>
           <fieldset className="grid gap-6 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">
               Search Algorithm Settings

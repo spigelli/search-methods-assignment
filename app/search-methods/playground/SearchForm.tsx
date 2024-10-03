@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { search } from './actions';
+import { useReactFlow } from '@xyflow/react';
 
 const towns = [
   'Abilene',
@@ -59,8 +61,14 @@ const towns = [
 ]
 
 export function SearchForm() {
+  const { getNodes, getEdges } = useReactFlow()
   return (
-    <form className="grid w-full items-start gap-2">
+    <form className="grid w-full items-start gap-2" action={async (formData: FormData) => {
+      const flowNodes = getNodes()
+      const flowEdges = getEdges()
+      const nodes = flowNodes.map((node) => node.id)
+      const result = await search(formData)
+    }}>
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
           Search Algorithm Settings

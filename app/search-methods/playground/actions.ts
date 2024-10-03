@@ -66,3 +66,14 @@ export async function getGraphData() {
   return { coordinates, adjacencies }
 }
 export type GraphData = Awaited<ReturnType<typeof getGraphData>>
+
+export async function search(formData: FormData) {
+  const rawFormData = {
+    algorithm: formData.get('algorithm'),
+    startTown: formData.get('start-town'),
+    endTown: formData.get('end-town'),
+  }
+
+  return []
+
+}

@@ -48,11 +48,7 @@ const edgeTypes = {
   'floating': FloatingEdge,
 };
 
-export function GraphCard({
-  graphData
-}: {
-  graphData: GraphData | null;
-}) {
+export function GraphCard() {
   const { theme } = useTheme();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<ReactFlowNode>([]);
@@ -72,34 +68,6 @@ export function GraphCard({
       ),
     [setEdges],
   );
-
-
-  useEffect(() => {
-    if (graphData === null) {
-      return;
-    }
-
-    const newNodes = graphData.coordinates.map((coordinate) => ({
-      id: coordinate.name,
-      position: {
-        x: coordinate.longitude * scaleFactor,
-        y: -1 * coordinate.latitude * scaleFactor,
-      },
-      data: { label: coordinate.name.replace('_', ' ') },
-      type: 'default',
-    }));
-    setNodes(newNodes);
-
-    const newEdges = graphData.adjacencies.map(([source, target], index) => ({
-      id: `edge-${source}-${target}-${index}`,
-      source,
-      target,
-      type: 'floating',
-      label: `${getCartesianDistance(graphData.coordinates, source, target).toFixed(2)} km`,
-    }));
-
-    setEdges(newEdges);
-  }, [graphData]);
 
   return (
     <ReactFlow

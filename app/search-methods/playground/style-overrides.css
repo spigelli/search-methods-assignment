@@ -22,6 +22,8 @@
   --xy-edge-label-background-color: theme('colors.zinc.900');
   --xy-edge-label-background-color-default: theme('colors.zinc.900');
   --xy-edge-label-color-default: theme('colors.zinc.100');
+  --xy-controls-button-background-color: theme('colors.zinc.900');
+  --xy-controls-button-color-props: theme('colors.zinc.100');
 }
 
 

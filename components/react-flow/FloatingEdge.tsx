@@ -1,14 +1,22 @@
-import { getBezierPath, EdgeText, useInternalNode, EdgeLabelRenderer, BaseEdge } from '@xyflow/react';
+import { getBezierPath, Edge, useInternalNode, EdgeLabelRenderer, BaseEdge, EdgeProps } from '@xyflow/react';
 
-import { getEdgeParams } from './utils.js';
+import { getEdgeParams } from './utils';
+import { CustomDefaultNode } from '@/app/search-methods/playground/CustomDefaultNode';
+
+export type FloatingEdge = Edge<
+  {
+    weight: number;
+  },
+  'floating'
+>
 
 export function FloatingEdge({
   source,
   target,
   ...baseEdgeProps
-}) {
-  const sourceNode = useInternalNode(source);
-  const targetNode = useInternalNode(target);
+}: EdgeProps<FloatingEdge>) {
+  const sourceNode = useInternalNode<CustomDefaultNode>(source);
+  const targetNode = useInternalNode<CustomDefaultNode>(target);
 
   if (!sourceNode || !targetNode) {
     return null;

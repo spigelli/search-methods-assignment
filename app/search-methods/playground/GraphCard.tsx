@@ -10,7 +10,6 @@ import {
 import { useTheme } from 'next-themes'
 
 import './style-overrides.css'
-import FloatingConnectionLine from '@/components/react-flow/FloatingConnectionLine'
 import { FloatingEdge } from '@/components/react-flow/FloatingEdge'
 
 import { CustomDefaultNode } from './CustomDefaultNode'
@@ -40,7 +39,6 @@ export function GraphCard() {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      connectionLineComponent={FloatingConnectionLine}
       fitView
     >
       <Background />

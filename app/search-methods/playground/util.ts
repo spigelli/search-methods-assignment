@@ -21,3 +21,15 @@ export function getCartesianDistance(
       Math.pow(sourceCoordinate.longitude - targetCoordinate.longitude, 2)
   )
 }
+
+export const searchMethodIds = ['bfs', 'dfs', 'iddfs', 'bestfs', 'astar' ] as const
+
+export type SearchMethodId = typeof searchMethodIds[number]
+
+export const searchMethodNames: Record<SearchMethodId, string> = {
+  bfs: 'Breadth-First',
+  dfs: 'Depth-First',
+  iddfs: 'ID-DFS',
+  bestfs: 'Best-First',
+  astar: 'A*',
+}

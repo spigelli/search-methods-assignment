@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/select'
 import { search } from './actions';
 import { useReactFlow } from '@xyflow/react';
+import { searchMethodNames, searchMethodIds } from './util';
+import { useMemo } from 'react';
 
 const towns = [
   'Abilene',
@@ -60,8 +62,15 @@ const towns = [
   'Zenda',
 ]
 
+const searchMethodSelects = searchMethodIds.map((key) => (
+  <SelectItem key={key} value={key}>
+    {searchMethodNames[key]}
+  </SelectItem>
+))
+
 export function SearchForm() {
   const { getNodes, getEdges } = useReactFlow()
+
   return (
     <form className="grid w-full items-start gap-2" action={async (formData: FormData) => {
       const flowNodes = getNodes()
@@ -80,11 +89,7 @@ export function SearchForm() {
               <SelectValue placeholder="Select an algorithm" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="bfs">Breadth-First</SelectItem>
-              <SelectItem value="dfs">Depth-First</SelectItem>
-              <SelectItem value="iddfs">ID-DFS</SelectItem>
-              <SelectItem value="bestfs">Best-First</SelectItem>
-              <SelectItem value="astar">A*</SelectItem>
+              {searchMethodSelects}
             </SelectContent>
           </Select>
         </div>

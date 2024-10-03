@@ -76,9 +76,9 @@ export function SearchForm() {
     searchMethod,
     setSearchMethod,
     startTown,
-    setStartTown,
+    updateEndTown,
     endTown,
-    setEndTown,
+    updateStartTown,
   } = useSearch()
 
   const handleSearchMethodChange = useCallback(
@@ -111,14 +111,14 @@ export function SearchForm() {
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-3">
             <Label htmlFor="start-town">Starting Town</Label>
-            <Select value={startTown} onValueChange={setStartTown}>
+            <Select value={startTown} onValueChange={updateStartTown}>
               <SelectTrigger id="start-town">
                 <SelectValue placeholder="Select start" />
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
                   {towns.map((town) => (
-                    <SelectItem key={town} value={town.toLowerCase()}>
+                    <SelectItem key={town} value={town}>
                       {town.replace('_', ' ')}
                     </SelectItem>
                   ))}
@@ -128,14 +128,14 @@ export function SearchForm() {
           </div>
           <div className="grid gap-3">
             <Label htmlFor="end-town">Ending Town</Label>
-            <Select value={endTown} onValueChange={setEndTown}>
+            <Select value={endTown} onValueChange={updateEndTown}>
               <SelectTrigger id="end-town">
                 <SelectValue placeholder="Select end" />
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
                   {towns.map((town) => (
-                    <SelectItem key={town} value={town.toLowerCase()}>
+                    <SelectItem key={town} value={town}>
                       {town.replace('_', ' ')}
                     </SelectItem>
                   ))}

@@ -29,13 +29,17 @@ export function CustomDefaultNode({
   return (
     <Fragment>
       <Handle type="source" position={Position.Top} />
-      <div>{label}</div>
-      {isStart && (
-        <Badge variant="destructive">Start Town</Badge>
-      )}
-      {isEnd && (
-        <Badge variant="destructive">End Town</Badge>
-      )}
+      <div className="relative">
+        {label}
+      </div>
+      <div className="h-0 overflow-visible">
+        {isStart && (
+          <Badge variant="success" className="mt-1">Start Town</Badge>
+        )}
+        {isEnd && (
+          <Badge variant="info" className="mt-1">Start Town</Badge>
+        )}
+      </div>
       <Handle type="target" position={Position.Bottom} />
     </Fragment>
   )

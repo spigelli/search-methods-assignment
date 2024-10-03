@@ -1,5 +1,7 @@
-import { createContext, Dispatch, SetStateAction, use, useContext, useState } from "react";
+import { createContext, Dispatch, SetStateAction, use, useCallback, useContext, useState } from "react";
 import { SearchMethodId } from "./util";
+import { useReactFlow } from "@xyflow/react";
+import { CustomDefaultNode } from "./CustomDefaultNode";
 
 type SearchingState = {
 }
@@ -7,9 +9,9 @@ type SearchingState = {
 
 const SearchContext = createContext<{
   startTown: string | undefined;
-  setStartTown: Dispatch<SetStateAction<string | undefined>>;
+  updateStartTown: (newStartTown: string | undefined) => void;
   endTown: string | undefined;
-  setEndTown: Dispatch<SetStateAction<string | undefined>>;
+  updateEndTown: (newEndTown: string | undefined) => void;
   searchMethod: SearchMethodId | undefined;
   setSearchMethod: Dispatch<SetStateAction<SearchMethodId | undefined>>;
   isSearching: boolean;
@@ -22,11 +24,37 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchMethod, setSearchMethod] = useState<SearchMethodId | undefined>(undefined);
   const [isSearching, setIsSearching] = useState(false);
 
+  const { updateNodeData } = useReactFlow<CustomDefaultNode>();
+
+  const updateStartTown = useCallback((newStartTown: string | undefined) => {
+    console.log('updating start town from: ', startTown, ' to: ', newStartTown);
+    if (startTown !== undefined) {
+      updateNodeData(startTown, { isStart: false });
+      console.log('updating node data for: ', startTown);
+    }
+    if (newStartTown !== undefined) {
+      updateNodeData(newStartTown, { isStart: true });
+      console.log('updating node data for: ', newStartTown);
+    }
+    console.log('setting start town to: ', newStartTown);
+    setStartTown(newStartTown);
+  }, [setStartTown]);
+
+  const updateEndTown = useCallback((newEndTown: string | undefined) => {
+    if (endTown !== undefined) {
+      updateNodeData(endTown, { isEnd: false });
+    }
+    if (newEndTown !== undefined) {
+      updateNodeData(newEndTown, { isEnd: true });
+    }
+    setEndTown(newEndTown);
+  }, [setEndTown]);
+
   const value = {
     startTown,
-    setStartTown,
+    updateStartTown,
     endTown,
-    setEndTown,
+    updateEndTown,
     searchMethod,
     setSearchMethod,
     isSearching,

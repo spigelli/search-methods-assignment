@@ -21,13 +21,13 @@ const edgeTypes = {
   floating: FloatingEdge,
 }
 
-const initialNodes: ReactFlowNode[] = []
+const initialNodes: CustomDefaultNode[] = []
 const initialEdges: Edge[] = []
 
 export function GraphCard() {
   const { theme } = useTheme()
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState<CustomDefaultNode>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   return (

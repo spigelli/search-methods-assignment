@@ -6,11 +6,12 @@ import { Icons } from '@/components/icons'
 
 import { getGraphData } from './actions'
 import { getCartesianDistance } from './util';
+import { CustomDefaultNode } from './CustomDefaultNode';
 
 const scaleFactor = 1000
 
 export function PopulateForm() {
-  const { setNodes, setEdges } = useReactFlow()
+  const { setNodes, setEdges } = useReactFlow<CustomDefaultNode>()
   return (
     <form
       className="grid w-full items-start gap-2"
@@ -22,8 +23,12 @@ export function PopulateForm() {
             x: coordinate.longitude * scaleFactor,
             y: -1 * coordinate.latitude * scaleFactor,
           },
-          data: { label: coordinate.name.replace('_', ' ') },
-          type: 'default',
+          data: {
+            label: coordinate.name.replace('_', ' '),
+            isStart: false,
+            isEnd: false,
+          },
+          type: 'default' as const,
         }))
         const newEdges = graphData.adjacencies.map(
           ([source, target], index) => ({

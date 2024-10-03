@@ -7,11 +7,12 @@ import { Icons } from '@/components/icons'
 import { getGraphData } from './actions'
 import { getCartesianDistance } from './util';
 import { CustomDefaultNode } from './CustomDefaultNode';
+import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
 
 const scaleFactor = 1000
 
 export function PopulateForm() {
-  const { setNodes, setEdges } = useReactFlow<CustomDefaultNode>()
+  const { setNodes, setEdges } = useReactFlow<CustomDefaultNode, FloatingEdge>()
   return (
     <form
       className="grid w-full items-start gap-2"
@@ -31,17 +32,24 @@ export function PopulateForm() {
           type: 'default' as const,
         }))
         const newEdges = graphData.adjacencies.map(
-          ([source, target], index) => ({
-            id: `edge-${source}-${target}`,
-            source,
-            target,
-            type: 'floating',
-            label: `${getCartesianDistance(
+          ([source, target], index) => {
+            const cartesianDistance = getCartesianDistance(
               graphData.coordinates,
               source,
               target
-            ).toFixed(2)} km`,
-          })
+            );
+
+            return {
+              id: `edge-${source}-${target}`,
+              source,
+              target,
+              type: 'floating' as const,
+              label: `${cartesianDistance.toFixed(2)} km`,
+              data: {
+                weight: cartesianDistance,
+              },
+            };
+          }
         )
         setNodes(newNodes)
         setEdges(newEdges)

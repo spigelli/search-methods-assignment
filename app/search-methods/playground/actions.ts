@@ -67,7 +67,15 @@ export async function getGraphData() {
 }
 export type GraphData = Awaited<ReturnType<typeof getGraphData>>
 
-export async function search(formData: FormData) {
+export async function search(
+  formData: FormData,
+  nodes: string[],
+  edges: {
+    source: string;
+    target: string;
+    weight: number;
+  }[]
+) {
   const rawFormData = {
     algorithm: formData.get('algorithm'),
     startTown: formData.get('start-town'),

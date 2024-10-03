@@ -13,6 +13,8 @@ import { useReactFlow } from '@xyflow/react';
 import { searchMethodNames, searchMethodIds, SearchMethodId } from './util';
 import { useCallback, useMemo } from 'react';
 import { useSearch } from './SearchProvider';
+import { CustomDefaultNode } from './CustomDefaultNode';
+import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
 
 const towns = [
   'Abilene',
@@ -70,7 +72,7 @@ const searchMethodSelects = searchMethodIds.map((key) => (
 ))
 
 export function SearchForm() {
-  const { getNodes, getEdges } = useReactFlow()
+  const { getNodes, getEdges } = useReactFlow<CustomDefaultNode, FloatingEdge>()
 
   const {
     searchMethod,
@@ -91,7 +93,16 @@ export function SearchForm() {
       const flowNodes = getNodes()
       const flowEdges = getEdges()
       const nodes = flowNodes.map((node) => node.id)
-      const result = await search(formData)
+      const edges = flowEdges.map((edge) => ({
+        source: edge.source,
+        target: edge.target,
+        weight: edge.data?.weight,
+      })).filter((edge) => edge.weight !== undefined) as {
+        source: string;
+        target: string;
+        weight: number;
+      }[]
+      const result = await search(formData, nodes, edges)
     }}>
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">

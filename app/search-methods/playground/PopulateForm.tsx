@@ -4,31 +4,10 @@ import { useReactFlow } from '@xyflow/react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Icons } from '@/components/icons'
 
-import { GraphData, getGraphData } from './actions'
+import { getGraphData } from './actions'
+import { getCartesianDistance } from './util';
 
 const scaleFactor = 1000
-
-function getCartesianDistance(
-  coordinates: GraphData['coordinates'],
-  source: string,
-  target: string
-) {
-  const sourceCoordinate = coordinates.find(
-    (coordinate) => coordinate.name === source
-  )
-  const targetCoordinate = coordinates.find(
-    (coordinate) => coordinate.name === target
-  )
-
-  if (sourceCoordinate === undefined || targetCoordinate === undefined) {
-    return 0
-  }
-
-  return Math.sqrt(
-    Math.pow(sourceCoordinate.latitude - targetCoordinate.latitude, 2) +
-      Math.pow(sourceCoordinate.longitude - targetCoordinate.longitude, 2)
-  )
-}
 
 export function PopulateForm() {
   const { setNodes, setEdges } = useReactFlow()

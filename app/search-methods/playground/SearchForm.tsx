@@ -1,16 +1,62 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const towns = [
-  "Abilene", "Andover", "Anthony", "Argonia", "Attica", "Augusta", "Bluff_City", "Caldwell",
-  "Cheney", "Clearwater", "Coldwater", "Derby", "El_Dorado", "Emporia", "Florence", "Greensburg",
-  "Harper", "Haven", "Hays", "Hillsboro", "Hutchinson", "Junction_City", "Kingman", "Kiowa",
-  "Leon", "Lyons", "Manhattan", "Marion", "Mayfield", "McPherson", "Medicine_Lodge", "Mulvane",
-  "Newton", "Oxford", "Pratt", "Rago", "Salina", "Sawyer", "South_Haven", "Topeka", "Towanda",
-  "Viola", "Wellington", "Wichita", "Winfield", "Zenda"
-];
+  'Abilene',
+  'Andover',
+  'Anthony',
+  'Argonia',
+  'Attica',
+  'Augusta',
+  'Bluff_City',
+  'Caldwell',
+  'Cheney',
+  'Clearwater',
+  'Coldwater',
+  'Derby',
+  'El_Dorado',
+  'Emporia',
+  'Florence',
+  'Greensburg',
+  'Harper',
+  'Haven',
+  'Hays',
+  'Hillsboro',
+  'Hutchinson',
+  'Junction_City',
+  'Kingman',
+  'Kiowa',
+  'Leon',
+  'Lyons',
+  'Manhattan',
+  'Marion',
+  'Mayfield',
+  'McPherson',
+  'Medicine_Lodge',
+  'Mulvane',
+  'Newton',
+  'Oxford',
+  'Pratt',
+  'Rago',
+  'Salina',
+  'Sawyer',
+  'South_Haven',
+  'Topeka',
+  'Towanda',
+  'Viola',
+  'Wellington',
+  'Wichita',
+  'Winfield',
+  'Zenda',
+]
 
 export function SearchForm() {
   return (
@@ -43,9 +89,11 @@ export function SearchForm() {
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
-                  {towns.map(town => <SelectItem key={town} value={town.toLowerCase()}>
-                    {town.replace('_', ' ')}
-                  </SelectItem>)}
+                  {towns.map((town) => (
+                    <SelectItem key={town} value={town.toLowerCase()}>
+                      {town.replace('_', ' ')}
+                    </SelectItem>
+                  ))}
                 </ScrollArea>
               </SelectContent>
             </Select>
@@ -58,9 +106,11 @@ export function SearchForm() {
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
-                  {towns.map(town => <SelectItem key={town} value={town.toLowerCase()}>
-                    {town.replace('_', ' ')}
-                  </SelectItem>)}
+                  {towns.map((town) => (
+                    <SelectItem key={town} value={town.toLowerCase()}>
+                      {town.replace('_', ' ')}
+                    </SelectItem>
+                  ))}
                 </ScrollArea>
               </SelectContent>
             </Select>
@@ -71,5 +121,5 @@ export function SearchForm() {
         Run Search Algorithm
       </Button>
     </form>
-  );
+  )
 }

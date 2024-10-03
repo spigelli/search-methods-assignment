@@ -1,10 +1,18 @@
-'use client';
+'use client'
 
-import { PopulateForm } from "./PopulateForm";
-import { SearchForm } from "./SearchForm";
-import { GraphCard } from "./GraphCard";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ReactFlowProvider } from "@xyflow/react";
+import { ReactFlowProvider } from '@xyflow/react'
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
+import { GraphCard } from './GraphCard'
+import { PopulateForm } from './PopulateForm'
+import { SearchForm } from './SearchForm'
 
 export function Playground() {
   return (
@@ -14,7 +22,9 @@ export function Playground() {
           <Card className="w-[350px] bg-slate-50/5 shadow-2xl backdrop-blur-[3px] dark:bg-slate-400/5">
             <CardHeader className="pb-4">
               <CardTitle>Configure search graph</CardTitle>
-              <CardDescription>Edit start and end towns and routing algorithm.</CardDescription>
+              <CardDescription>
+                Edit start and end towns and routing algorithm.
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
               <PopulateForm />
@@ -27,5 +37,5 @@ export function Playground() {
         </div>
       </div>
     </ReactFlowProvider>
-  );
+  )
 }

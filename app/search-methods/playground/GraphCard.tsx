@@ -1,24 +1,26 @@
-import { GraphData } from './actions';
+import { useCallback, useEffect } from 'react'
 import {
   Background,
-  Controls,
-  ReactFlow,
-  type Node as ReactFlowNode,
-  type Edge,
-  useNodesState,
-  useEdgesState,
-  addEdge,
   Connection,
+  Controls,
   MarkerType,
-} from '@xyflow/react';
-import { useTheme } from 'next-themes';
-import { useCallback, useEffect } from 'react';
-import './style-overrides.css';
-import { CustomDefaultNode } from './CustomDefaultNode';
-import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
-import FloatingConnectionLine from '@/components/react-flow/FloatingConnectionLine';
+  ReactFlow,
+  addEdge,
+  useEdgesState,
+  useNodesState,
+  type Edge,
+  type Node as ReactFlowNode,
+} from '@xyflow/react'
+import { useTheme } from 'next-themes'
 
-const scaleFactor = 1000;
+import { GraphData } from './actions'
+import './style-overrides.css'
+import FloatingConnectionLine from '@/components/react-flow/FloatingConnectionLine'
+import { FloatingEdge } from '@/components/react-flow/FloatingEdge'
+
+import { CustomDefaultNode } from './CustomDefaultNode'
+
+const scaleFactor = 1000
 
 function getCartesianDistance(
   coordinates: GraphData['coordinates'],
@@ -27,32 +29,32 @@ function getCartesianDistance(
 ) {
   const sourceCoordinate = coordinates.find(
     (coordinate) => coordinate.name === source
-  );
+  )
   const targetCoordinate = coordinates.find(
     (coordinate) => coordinate.name === target
-  );
+  )
 
   if (sourceCoordinate === undefined || targetCoordinate === undefined) {
-    return 0;
+    return 0
   }
 
   return Math.sqrt(
     Math.pow(sourceCoordinate.latitude - targetCoordinate.latitude, 2) +
       Math.pow(sourceCoordinate.longitude - targetCoordinate.longitude, 2)
-  );
+  )
 }
 
 const nodeTypes = { default: CustomDefaultNode }
 
 const edgeTypes = {
-  'floating': FloatingEdge,
-};
+  floating: FloatingEdge,
+}
 
 export function GraphCard() {
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<ReactFlowNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<ReactFlowNode>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   const onConnect = useCallback(
     (params: Edge | Connection) =>
@@ -63,11 +65,11 @@ export function GraphCard() {
             type: 'floating',
             markerEnd: { type: MarkerType.Arrow },
           },
-          eds,
-        ),
+          eds
+        )
       ),
-    [setEdges],
-  );
+    [setEdges]
+  )
 
   return (
     <ReactFlow
@@ -87,5 +89,5 @@ export function GraphCard() {
       <Background />
       <Controls />
     </ReactFlow>
-  );
+  )
 }

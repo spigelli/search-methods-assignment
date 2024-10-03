@@ -1,13 +1,13 @@
-'use server';
+'use server'
 
-import { promises as fs } from 'fs';
-import path from "path";
-import { parse } from 'csv-parse/sync';
-import { z } from 'zod';
+import { promises as fs } from 'fs'
+import path from 'path'
+import { parse } from 'csv-parse/sync'
+import { z } from 'zod'
 
 async function parseCoordinates() {
-// Construct the full path to the CSV file in the public folder
-  const filePath = path.join(process.cwd(), 'public', 'coordinates.csv');
+  // Construct the full path to the CSV file in the public folder
+  const filePath = path.join(process.cwd(), 'public', 'coordinates.csv')
   try {
     // Read the file
     const fileContent = await fs.readFile(filePath, 'utf-8')
@@ -20,14 +20,16 @@ async function parseCoordinates() {
         record.longitude = parseFloat(record.longitude)
         return record
       },
-      skip_empty_lines: true
+      skip_empty_lines: true,
     })
 
-    const recordsSchema = z.array(z.object({
-      name: z.string(),
-      latitude: z.number(),
-      longitude: z.number()
-    }))
+    const recordsSchema = z.array(
+      z.object({
+        name: z.string(),
+        latitude: z.number(),
+        longitude: z.number(),
+      })
+    )
     return recordsSchema.parse(records)
   } catch (error) {
     console.error('Error reading or parsing CSV file:', error)
@@ -49,11 +51,9 @@ const parseAdjacencies = async () => {
     )
     // Deduplicate the edges if the reverse edge is also present
     return formattedAdjacencies.filter(
-      ([source, target], index, self) => (
+      ([source, target], index, self) =>
         self.findIndex(([s, t]) => s === target && t === source) === -1
-      )
     )
-
   } catch (error) {
     console.error('Error reading or parsing adjacency file:', error)
     throw new Error('Failed to read or parse adjacency file')
@@ -65,4 +65,4 @@ export async function getGraphData() {
   const adjacencies = await parseAdjacencies()
   return { coordinates, adjacencies }
 }
-export type GraphData = Awaited<ReturnType<typeof getGraphData>>;
+export type GraphData = Awaited<ReturnType<typeof getGraphData>>

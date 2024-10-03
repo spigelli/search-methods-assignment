@@ -44,7 +44,6 @@ export function GraphCard() {
       fitView
     >
       <Background />
-      <Controls />
     </ReactFlow>
   )
 }

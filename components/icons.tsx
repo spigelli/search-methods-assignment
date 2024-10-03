@@ -1,7 +1,10 @@
 import {
   Download,
   LucideProps,
+  Minus,
   Moon,
+  Plus,
+  Scan,
   SquareArrowOutUpRight,
   SunMedium,
   Twitter,
@@ -32,4 +35,7 @@ export const Icons = {
   ),
   download: Download,
   newPage: SquareArrowOutUpRight,
+  plus: Plus,
+  minus: Minus,
+  fit: Scan,
 }

@@ -10,8 +10,9 @@ import {
 } from '@/components/ui/select'
 import { search } from './actions';
 import { useReactFlow } from '@xyflow/react';
-import { searchMethodNames, searchMethodIds } from './util';
-import { useMemo } from 'react';
+import { searchMethodNames, searchMethodIds, SearchMethodId } from './util';
+import { useCallback, useMemo } from 'react';
+import { useSearch } from './SearchProvider';
 
 const towns = [
   'Abilene',
@@ -71,6 +72,20 @@ const searchMethodSelects = searchMethodIds.map((key) => (
 export function SearchForm() {
   const { getNodes, getEdges } = useReactFlow()
 
+  const {
+    searchMethod,
+    setSearchMethod,
+    startTown,
+    setStartTown,
+    endTown,
+    setEndTown,
+  } = useSearch()
+
+  const handleSearchMethodChange = useCallback(
+    (val: string) => setSearchMethod(val as SearchMethodId),
+    [setSearchMethod],
+  );
+
   return (
     <form className="grid w-full items-start gap-2" action={async (formData: FormData) => {
       const flowNodes = getNodes()
@@ -84,7 +99,7 @@ export function SearchForm() {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="algorithm">Routing Algorithm</Label>
-          <Select>
+          <Select value={searchMethod} onValueChange={handleSearchMethodChange}>
             <SelectTrigger id="algorithm">
               <SelectValue placeholder="Select an algorithm" />
             </SelectTrigger>
@@ -96,7 +111,7 @@ export function SearchForm() {
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-3">
             <Label htmlFor="start-town">Starting Town</Label>
-            <Select>
+            <Select value={startTown} onValueChange={setStartTown}>
               <SelectTrigger id="start-town">
                 <SelectValue placeholder="Select start" />
               </SelectTrigger>
@@ -113,7 +128,7 @@ export function SearchForm() {
           </div>
           <div className="grid gap-3">
             <Label htmlFor="end-town">Ending Town</Label>
-            <Select>
+            <Select value={endTown} onValueChange={setEndTown}>
               <SelectTrigger id="end-town">
                 <SelectValue placeholder="Select end" />
               </SelectTrigger>

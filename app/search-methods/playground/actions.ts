@@ -146,10 +146,11 @@ function searchDFSPath(
     if (adjacentTownsSet !== undefined) {
       const adjacentTowns = Array.from(adjacentTownsSet)
       // Sort the adjacent towns in ascending weight
+
       adjacentTowns.sort((a, b) => {
         const weightA = graph.getEdgeWeight(currentTown, a) || 0
         const weightB = graph.getEdgeWeight(currentTown, b) || 0
-        return weightA - weightB
+        return weightB - weightA
       })
       // Add the adjacent towns to the stack if they have not been visited
       adjacentTowns.forEach((town) => {
@@ -177,7 +178,10 @@ export async function search(
 
   const graph = new Graph()
   nodes.forEach((node) => graph.addNode(node))
-  edges.forEach((edge) => graph.addEdge(edge.source, edge.target, edge.weight))
+  edges.forEach((edge) => {
+    graph.addEdge(edge.source, edge.target, edge.weight);
+    graph.addEdge(edge.target, edge.source, edge.weight);
+  })
 
   const path = searchDFSPath(graph, startTown, endTown)
   return path

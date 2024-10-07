@@ -6,6 +6,7 @@ import { CustomDefaultNode } from '@/app/search-methods/playground/CustomDefault
 export type FloatingEdge = Edge<
   {
     weight: number;
+    offsetLabelY?: number;
   },
   'floating'
 >
@@ -41,7 +42,7 @@ export function FloatingEdge({
       {...baseEdgeProps}
       path={edgePath}
       labelX={labelX}
-      labelY={labelY}
+      labelY={labelY + (baseEdgeProps.data?.offsetLabelY ?? 0)}
     />
   );
 }

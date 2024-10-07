@@ -48,6 +48,7 @@ export function PopulateForm() {
               data: {
                 weight: cartesianDistance,
               },
+              zIndex: 10,
             };
           }
         )

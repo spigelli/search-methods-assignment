@@ -9,12 +9,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { search } from './actions';
-import { useReactFlow } from '@xyflow/react';
+import { MarkerType, useReactFlow } from '@xyflow/react';
 import { searchMethodNames, searchMethodIds, SearchMethodId, flowNodesToGraphNodes, flowEdgesToGraphEdges } from './util';
 import { useCallback } from 'react';
 import { useSearch } from './SearchProvider';
 import { CustomDefaultNode } from './CustomDefaultNode';
-import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
 import { z } from 'zod';
 
 const towns = [
@@ -91,7 +90,7 @@ const searchFormSchema = z.object({
 });
 
 export function SearchForm() {
-  const { getNodes, getEdges } = useReactFlow<CustomDefaultNode, FloatingEdge>()
+  const { getNodes, getEdges, setEdges } = useReactFlow<CustomDefaultNode>()
 
   const {
     searchMethod,
@@ -121,7 +120,31 @@ export function SearchForm() {
       const edges = flowEdgesToGraphEdges(flowEdges)
 
       const path = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
-      console.log('Path: ', path)
+      const newEdges = path.map(({ source, target }, index) => ({
+        id: `search-edge-${index}`,
+        source,
+        target,
+        label: `Traversal ${index + 1}`,
+        type: 'floating',
+        data: {
+          offsetLabelY: -23,
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+          color: '#ff0072',
+        },
+        style: {
+          strokeWidth: 2,
+          stroke: '#FF0072',
+        },
+        zIndex: 1,
+      }))
+      setEdges((prevEdges) => {
+        const nonSearchEdges = prevEdges.filter((edge) => !edge.id.startsWith('search-edge-'))
+        return [...nonSearchEdges, ...newEdges]
+      });
     }}>
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">

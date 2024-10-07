@@ -28,7 +28,10 @@ export function CustomDefaultNode({
 }: NodeProps<CustomDefaultNode>) {
   return (
     <Fragment>
-      <Handle type="source" position={Position.Top} />
+      <Handle
+        type="source"
+        position={Position.Right}
+      />
       <div className="relative">
         {label}
       </div>
@@ -40,7 +43,10 @@ export function CustomDefaultNode({
           <Badge variant="info" className="mt-1">Start Town</Badge>
         )}
       </div>
-      <Handle type="target" position={Position.Bottom} />
+      <Handle
+        type="target"
+        position={Position.Left}
+      />
     </Fragment>
   )
 }

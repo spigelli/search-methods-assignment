@@ -1,11 +1,12 @@
 import {
   Background,
-  Controls,
+  BezierEdge,
   ReactFlow,
+  SmoothStepEdge,
+  StraightEdge,
   useEdgesState,
   useNodesState,
   type Edge,
-  type Node as ReactFlowNode,
 } from '@xyflow/react'
 import { useTheme } from 'next-themes'
 
@@ -18,6 +19,9 @@ const nodeTypes = { default: CustomDefaultNode }
 
 const edgeTypes = {
   floating: FloatingEdge,
+  smoothstep: SmoothStepEdge,
+  bezier: BezierEdge,
+  straight: StraightEdge,
 }
 
 const initialNodes: CustomDefaultNode[] = []

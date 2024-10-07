@@ -22,9 +22,6 @@ export function CustomDefaultNode({
     isStart,
     isEnd,
   },
-  width,
-  height,
-  selected,
 }: NodeProps<CustomDefaultNode>) {
   return (
     <Fragment>

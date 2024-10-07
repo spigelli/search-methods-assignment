@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction, use, useCallback, useContext, useState } from "react";
 import { SearchMethodId } from "./util";
-import { Edge, useEdgesState, useReactFlow } from "@xyflow/react";
+import { Edge, useEdgesState, useReactFlow, useUpdateNodeInternals } from "@xyflow/react";
 import { CustomDefaultNode } from "./CustomDefaultNode";
 
 type SearchContextType<T extends Edge> = {
@@ -26,6 +26,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchEdges, setSearchEdges] = useEdgesState<Edge>([]);
 
   const { updateNodeData } = useReactFlow<CustomDefaultNode>();
+  const updateNodeInternals = useUpdateNodeInternals();
 
   const updateStartTown = useCallback((newStartTown: string | undefined) => {
     if (startTown !== undefined) {
@@ -35,7 +36,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       updateNodeData(newStartTown, { isStart: true });
     }
     setStartTown(newStartTown);
-  }, [setStartTown]);
+  }, [setStartTown, startTown, updateNodeData, updateNodeInternals]);
 
   const updateEndTown = useCallback((newEndTown: string | undefined) => {
     if (endTown !== undefined) {
@@ -45,7 +46,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       updateNodeData(newEndTown, { isEnd: true });
     }
     setEndTown(newEndTown);
-  }, [setEndTown]);
+  }, [setEndTown, endTown, updateNodeData, updateNodeInternals]);
 
   const value = {
     startTown,

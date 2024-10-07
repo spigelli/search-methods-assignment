@@ -27,16 +27,12 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const { updateNodeData } = useReactFlow<CustomDefaultNode>();
 
   const updateStartTown = useCallback((newStartTown: string | undefined) => {
-    console.log('updating start town from: ', startTown, ' to: ', newStartTown);
     if (startTown !== undefined) {
       updateNodeData(startTown, { isStart: false });
-      console.log('updating node data for: ', startTown);
     }
     if (newStartTown !== undefined) {
       updateNodeData(newStartTown, { isStart: true });
-      console.log('updating node data for: ', newStartTown);
     }
-    console.log('setting start town to: ', newStartTown);
     setStartTown(newStartTown);
   }, [setStartTown]);
 

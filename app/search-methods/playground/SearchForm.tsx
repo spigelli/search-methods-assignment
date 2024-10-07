@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/select'
 import { search } from './actions';
 import { useReactFlow } from '@xyflow/react';
-import { searchMethodNames, searchMethodIds, SearchMethodId } from './util';
-import { useCallback, useMemo } from 'react';
+import { searchMethodNames, searchMethodIds, SearchMethodId, flowNodesToGraphNodes, flowEdgesToGraphEdges } from './util';
+import { useCallback } from 'react';
 import { useSearch } from './SearchProvider';
 import { CustomDefaultNode } from './CustomDefaultNode';
 import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
+import { z } from 'zod';
 
 const towns = [
   'Abilene',
@@ -71,6 +72,24 @@ const searchMethodSelects = searchMethodIds.map((key) => (
   </SelectItem>
 ))
 
+const townSelectsStart = towns.map((town) => (
+  <SelectItem key={`${town}-start`} value={town}>
+    {town.replace('_', ' ')}
+  </SelectItem>
+));
+
+const townSelectsEnd = towns.map((town) => (
+  <SelectItem key={`${town}-start`} value={town}>
+    {town.replace('_', ' ')}
+  </SelectItem>
+));
+
+const searchFormSchema = z.object({
+  algorithm: z.string(),
+  startTown: z.string(),
+  endTown: z.string(),
+});
+
 export function SearchForm() {
   const { getNodes, getEdges } = useReactFlow<CustomDefaultNode, FloatingEdge>()
 
@@ -90,19 +109,19 @@ export function SearchForm() {
 
   return (
     <form className="grid w-full items-start gap-2" action={async (formData: FormData) => {
+      const {
+        algorithm,
+        startTown,
+        endTown,
+      } = searchFormSchema.parse(Object.fromEntries(formData))
+
       const flowNodes = getNodes()
       const flowEdges = getEdges()
-      const nodes = flowNodes.map((node) => node.id)
-      const edges = flowEdges.map((edge) => ({
-        source: edge.source,
-        target: edge.target,
-        weight: edge.data?.weight,
-      })).filter((edge) => edge.weight !== undefined) as {
-        source: string;
-        target: string;
-        weight: number;
-      }[]
-      const result = await search(formData, nodes, edges)
+      const nodes = flowNodesToGraphNodes(flowNodes)
+      const edges = flowEdgesToGraphEdges(flowEdges)
+
+      const path = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
+      console.log('Path: ', path)
     }}>
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
@@ -110,7 +129,11 @@ export function SearchForm() {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="algorithm">Routing Algorithm</Label>
-          <Select value={searchMethod} onValueChange={handleSearchMethodChange}>
+          <Select
+            value={searchMethod}
+            onValueChange={handleSearchMethodChange}
+            name="algorithm"
+          >
             <SelectTrigger id="algorithm">
               <SelectValue placeholder="Select an algorithm" />
             </SelectTrigger>
@@ -121,35 +144,35 @@ export function SearchForm() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-3">
-            <Label htmlFor="start-town">Starting Town</Label>
-            <Select value={startTown} onValueChange={updateStartTown}>
-              <SelectTrigger id="start-town">
+            <Label htmlFor="startTown">Starting Town</Label>
+            <Select
+              value={startTown}
+              onValueChange={updateStartTown}
+              name="startTown"
+            >
+              <SelectTrigger id="startTown">
                 <SelectValue placeholder="Select start" />
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
-                  {towns.map((town) => (
-                    <SelectItem key={town} value={town}>
-                      {town.replace('_', ' ')}
-                    </SelectItem>
-                  ))}
+                  {townSelectsStart}
                 </ScrollArea>
               </SelectContent>
             </Select>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="end-town">Ending Town</Label>
-            <Select value={endTown} onValueChange={updateEndTown}>
-              <SelectTrigger id="end-town">
+            <Label htmlFor="endTown">Ending Town</Label>
+            <Select
+              value={endTown}
+              onValueChange={updateEndTown}
+              name="endTown"
+            >
+              <SelectTrigger id="endTown">
                 <SelectValue placeholder="Select end" />
               </SelectTrigger>
               <SelectContent>
                 <ScrollArea className="h-[200px]">
-                  {towns.map((town) => (
-                    <SelectItem key={town} value={town}>
-                      {town.replace('_', ' ')}
-                    </SelectItem>
-                  ))}
+                  {townSelectsEnd}
                 </ScrollArea>
               </SelectContent>
             </Select>

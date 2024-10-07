@@ -1,4 +1,9 @@
+import { Edge, Node } from "@xyflow/react";
+
+
+
 import { GraphData } from "./actions";
+
 
 export function getCartesianDistance(
   coordinates: GraphData['coordinates'],
@@ -32,4 +37,23 @@ export const searchMethodNames: Record<SearchMethodId, string> = {
   iddfs: 'ID-DFS',
   bestfs: 'Best-First',
   astar: 'A*',
+}
+
+export function flowNodesToGraphNodes<T extends Node>(nodes: T[]) {
+  return nodes.map((node) => (node.id))
+}
+
+export function flowEdgesToGraphEdges<T extends Edge>(edges: T[]) {
+  return (
+    edges.map((edge) => ({
+      source: edge.source,
+      target: edge.target,
+      weight: edge.data?.weight,
+    }))
+    .filter((edge) => edge.weight !== undefined) as {
+      source: string
+      target: string
+      weight: number
+    }[]
+  )
 }

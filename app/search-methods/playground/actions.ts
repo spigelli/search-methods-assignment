@@ -4,6 +4,8 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { parse } from 'csv-parse/sync'
 import { z } from 'zod'
+import { Graph } from '@/pkg/graph-data-structure'
+import { SearchMethodId } from './util';
 
 async function parseCoordinates() {
   // Construct the full path to the CSV file in the public folder
@@ -67,8 +69,103 @@ export async function getGraphData() {
 }
 export type GraphData = Awaited<ReturnType<typeof getGraphData>>
 
+/**
+ * Use depth-first search to find a path between two towns avoiding cycles.
+ */
+function searchDFS(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+) {
+  const visited = new Set<string>()
+  const stack = [startTown]
+
+  while (stack.length > 0 && !visited.has(endTown)) {
+    // Pop the last element from the stack
+    const currentTown = stack.pop() as string
+    // Mark the current town as visited
+    visited.add(currentTown)
+    // Add the adjacent towns to the stack
+    const adjacentTownsSet = graph.adjacent(currentTown)
+    if (adjacentTownsSet !== undefined) {
+      const adjacentTowns = Array.from(adjacentTownsSet)
+      // Sort the adjacent towns in ascending weight
+      adjacentTowns.sort((a, b) => {
+        const weightA = graph.getEdgeWeight(currentTown, a) || 0
+        const weightB = graph.getEdgeWeight(currentTown, b) || 0
+        return weightA - weightB
+      })
+      // Add the adjacent towns to the stack if they have not been visited
+      adjacentTowns.forEach((town) => {
+        if (!visited.has(town)) {
+          stack.push(town)
+        }
+      })
+    }
+  }
+
+  return Array.from(visited)
+}
+
+/**
+ * Operates similarly to the `searchDFS` function, but with returns the path as a list of edges.
+ */
+function searchDFSPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+) {
+  const visited: {
+    source: string;
+    target: string;
+  }[] = []
+
+  const foundEndTown = () => visited.some((edge) => edge.target === endTown)
+
+  const stack: {
+    id: string;
+    adjacentFrom: string;
+  }[] = [
+    { id: startTown, adjacentFrom: startTown },
+  ]
+
+  while (stack.length > 0 && !foundEndTown()) {
+    // Pop the last element from the stack
+    const {
+      id: currentTown,
+      adjacentFrom,
+    } = stack.pop() as { id: string; adjacentFrom: string }
+
+    // Unless the current town is the start town, add the edge to the visited list
+    if (currentTown !== startTown) {
+      visited.push({ source: adjacentFrom, target: currentTown })
+    }
+
+    // Add the adjacent towns to the stack
+    const adjacentTownsSet = graph.adjacent(currentTown)
+    if (adjacentTownsSet !== undefined) {
+      const adjacentTowns = Array.from(adjacentTownsSet)
+      // Sort the adjacent towns in ascending weight
+      adjacentTowns.sort((a, b) => {
+        const weightA = graph.getEdgeWeight(currentTown, a) || 0
+        const weightB = graph.getEdgeWeight(currentTown, b) || 0
+        return weightA - weightB
+      })
+      // Add the adjacent towns to the stack if they have not been visited
+      adjacentTowns.forEach((town) => {
+        if (!visited.some((edge) => edge.target === town)) {
+          stack.push({ id: town, adjacentFrom: currentTown })
+        }
+      })
+    }
+  }
+
+  return visited
+}
 export async function search(
-  formData: FormData,
+  algorithm: SearchMethodId,
+  startTown: string,
+  endTown: string,
   nodes: string[],
   edges: {
     source: string;
@@ -76,12 +173,12 @@ export async function search(
     weight: number;
   }[]
 ) {
-  const rawFormData = {
-    algorithm: formData.get('algorithm'),
-    startTown: formData.get('start-town'),
-    endTown: formData.get('end-town'),
-  }
 
-  return []
 
+  const graph = new Graph()
+  nodes.forEach((node) => graph.addNode(node))
+  edges.forEach((edge) => graph.addEdge(edge.source, edge.target, edge.weight))
+
+  const path = searchDFSPath(graph, startTown, endTown)
+  return path
 }

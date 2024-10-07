@@ -1,4 +1,4 @@
-import { TraversingTracks } from './types.js';
+import { TraversingTracks } from './types';
 
 /**
  * Remove the node with the minimum weight from the priority queue.

@@ -1,7 +1,7 @@
-import { Graph } from '../../Graph.js';
-import { invariant } from '../../invariant.js';
-import { NoInfer } from '../../types.js';
-import { TraversingTracks } from './types.js';
+import { Graph } from '../../Graph';
+import { invariant } from '../../invariant';
+import { NoInfer } from '../../types';
+import { TraversingTracks } from './types';
 
 export function relax<Node>(
   graph: Graph<Node, any>,

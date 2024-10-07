@@ -1,5 +1,5 @@
-import { Graph } from '../Graph.js';
-import { NoInfer } from '../types.js';
+import { Graph } from '../Graph';
+import { NoInfer } from '../types';
 
 /**
  * Return the node matching your function. Throws if none is found or if more than one node if found.

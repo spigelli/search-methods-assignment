@@ -1,9 +1,9 @@
 import { describe, expectTypeOf, it, expect } from 'vitest';
-import { Graph } from '../Graph.js';
-import { checkSerialized } from '../test-utils.js';
-import { Serialized } from '../types.js';
-import { deserializeGraph } from './deserializeGraph.js';
-import { serializeGraph } from './serializeGraph.js';
+import { Graph } from '../Graph';
+import { checkSerialized } from '../test-utils';
+import { Serialized } from '../types';
+import { deserializeGraph } from './deserializeGraph';
+import { serializeGraph } from './serializeGraph';
 
 describe('serializeGraph', () => {
   it('should deserialize a graph', () => {

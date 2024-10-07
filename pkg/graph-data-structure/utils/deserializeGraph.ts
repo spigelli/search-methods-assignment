@@ -1,5 +1,5 @@
-import { Graph } from '../Graph.js';
-import { NoInfer, SerializedInput } from '../types.js';
+import { Graph } from '../Graph';
+import { NoInfer, SerializedInput } from '../types';
 
 export function deserializeGraph<Node, LinkProps, NodeIdentity>(
   ...args: Node extends object

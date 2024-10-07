@@ -4,9 +4,9 @@
  * Amazingly, this comes from just reversing the result from depth first search.
  * Cormen et al. "Introduction to Algorithms" 3rd Ed. p. 613
  */
-import { Graph } from '../../Graph.js';
-import { NoInfer } from '../../types.js';
-import { depthFirstSearch } from '../depthFirstSearch/index.js';
+import { Graph } from '../../Graph';
+import { NoInfer } from '../../types';
+import { depthFirstSearch } from '../depthFirstSearch/index';
 
 export type TopologicalSortOptions<Node, LinkProps> = {
   /**

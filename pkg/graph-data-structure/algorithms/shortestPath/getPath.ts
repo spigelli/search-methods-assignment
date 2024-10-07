@@ -1,7 +1,7 @@
-import type { EdgeWeight, NoInfer } from '../../types.js';
-import type { TraversingTracks } from './types.js';
+import type { EdgeWeight, NoInfer } from '../../types';
+import type { TraversingTracks } from './types';
 
-import { Graph } from '../../Graph.js';
+import { Graph } from '../../Graph';
 
 /**
  * Assembles the shortest path by traversing the

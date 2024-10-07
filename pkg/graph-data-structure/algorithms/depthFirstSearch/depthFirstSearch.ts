@@ -1,9 +1,9 @@
-import { invariant } from '../../invariant.js';
-import type { NoInfer } from '../../types.js';
-import type { DepthFirstSearchOptions } from './types.js';
+import { invariant } from '../../invariant';
+import type { NoInfer } from '../../types';
+import type { DepthFirstSearchOptions } from './types';
 
-import { Graph } from '../../Graph.js';
-import { depthFirstVisit } from './depthFirstVisit.js';
+import { Graph } from '../../Graph';
+import { depthFirstVisit } from './depthFirstVisit';
 
 /**
  * Depth First Search algorithm, inspired by

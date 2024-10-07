@@ -1,8 +1,8 @@
-import { Graph } from '../../Graph.js';
-import { NoInfer } from '../../types.js';
-import { extractMin } from './extractMin.js';
-import { relax } from './relax.js';
-import { TraversingTracks } from './types.js';
+import { Graph } from '../../Graph';
+import { NoInfer } from '../../types';
+import { extractMin } from './extractMin';
+import { relax } from './relax';
+import { TraversingTracks } from './types';
 
 export function dijkstra<Node, LinkProps>(
   graph: Graph<Node, LinkProps>,

@@ -1,5 +1,5 @@
-import { Graph } from '../Graph.js';
-import { NoInfer } from '../types.js';
+import { Graph } from '../Graph';
+import { NoInfer } from '../types';
 
 /**
  * Returns all the nodes matching your function.

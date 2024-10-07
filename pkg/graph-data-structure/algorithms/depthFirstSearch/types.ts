@@ -1,5 +1,5 @@
-import type { Graph } from '../../Graph.js';
-import type { NoInfer } from '../../types.js';
+import type { Graph } from '../../Graph';
+import type { NoInfer } from '../../types';
 
 export type DepthFirstSearchOptions<Node, LinkProps> = {
   /**

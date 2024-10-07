@@ -1,5 +1,5 @@
-import { Graph } from '../Graph.js';
-import { NoInfer } from '../types.js';
+import { Graph } from '../Graph';
+import { NoInfer } from '../types';
 
 /**
  * Computes the indegree for the given node.

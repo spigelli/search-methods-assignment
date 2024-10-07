@@ -1,2 +1,2 @@
-export { shortestPath } from './shortestPath.js';
-export { shortestPaths } from './shortestPaths.js';
+export { shortestPath } from './shortestPath';
+export { shortestPaths } from './shortestPaths';

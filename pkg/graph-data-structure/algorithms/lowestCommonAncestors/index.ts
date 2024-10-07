@@ -1,1 +1,1 @@
-export { lowestCommonAncestors } from './lowestCommonAncestors.js';
+export { lowestCommonAncestors } from './lowestCommonAncestors';

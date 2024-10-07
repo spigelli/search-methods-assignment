@@ -1,8 +1,8 @@
 /**
  * Serializes the graph.
  */
-import { Graph } from '../Graph.js';
-import { Edge, Serialized } from '../types.js';
+import { Graph } from '../Graph';
+import { Edge, Serialized } from '../types';
 
 type SerializeGraphOptions<IncludeDefaultWeight extends boolean = false> = {
   /**

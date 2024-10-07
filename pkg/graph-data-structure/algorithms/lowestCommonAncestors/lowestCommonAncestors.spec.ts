@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../../Graph.js';
-import { lowestCommonAncestors } from './lowestCommonAncestors.js';
+import { Graph } from '../../Graph';
+import { lowestCommonAncestors } from './lowestCommonAncestors';
 
 describe('lowestCommonAncestors', () => {
   it('Should compute lowest common ancestors.', function () {

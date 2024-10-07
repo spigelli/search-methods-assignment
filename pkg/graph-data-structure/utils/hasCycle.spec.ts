@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../Graph.js';
-import { hasCycle } from './hasCycle.js';
+import { Graph } from '../Graph';
+import { hasCycle } from './hasCycle';
 
 describe('hasCycle', () => {
   it('should detect cycle.', function () {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../../Graph.js';
-import { serializeGraph } from '../../utils/serializeGraph.js';
-import { shortestPath } from './shortestPath.js';
-import { shortestPaths } from './shortestPaths.js';
+import { Graph } from '../../Graph';
+import { serializeGraph } from '../../utils/serializeGraph';
+import { shortestPath } from './shortestPath';
+import { shortestPaths } from './shortestPaths';
 
 describe("Dijkstra's Shortest Path Algorithm", function () {
   it('Should compute shortest path on a single edge.', function () {

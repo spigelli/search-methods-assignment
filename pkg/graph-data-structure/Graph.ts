@@ -1,5 +1,5 @@
-import { invariant } from './invariant.js';
-import { EdgeWeight } from './types.js';
+import { invariant } from './invariant';
+import { EdgeWeight } from './types';
 
 export class Graph<Node = string, LinkProps = never> {
   /**

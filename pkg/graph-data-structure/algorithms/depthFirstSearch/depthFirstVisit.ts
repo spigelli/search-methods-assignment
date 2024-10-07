@@ -1,7 +1,7 @@
-import { CycleError } from '../../CycleError.js';
-import { Graph } from '../../Graph.js';
-import { NoInfer } from '../../types.js';
-import { DepthFirstSearchOptions } from './types.js';
+import { CycleError } from '../../CycleError';
+import { Graph } from '../../Graph';
+import { NoInfer } from '../../types';
+import { DepthFirstSearchOptions } from './types';
 
 export function depthFirstVisit<Node, LinkProps>(
   graph: Graph<Node, LinkProps>,

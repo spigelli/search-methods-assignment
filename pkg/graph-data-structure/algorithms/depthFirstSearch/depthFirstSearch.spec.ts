@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../../Graph.js';
-import { depthFirstSearch } from './index.js';
+import { Graph } from '../../Graph';
+import { depthFirstSearch } from './index';
 
 describe('depthFirstSearch', () => {
   it('Should return the nodes connected to the source node with the correct type of edge.', function () {

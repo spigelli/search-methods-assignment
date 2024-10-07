@@ -1,4 +1,4 @@
-import { Graph } from '../Graph.js';
+import { Graph } from '../Graph';
 
 /**
  * Clone the graph data structures.

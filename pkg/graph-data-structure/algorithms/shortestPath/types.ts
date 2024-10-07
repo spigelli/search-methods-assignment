@@ -1,4 +1,4 @@
-import { EdgeWeight } from '../../types.js';
+import { EdgeWeight } from '../../types';
 
 export type TraversingTracks<Node> = {
   /**

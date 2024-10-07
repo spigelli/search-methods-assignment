@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest';
-import { Graph } from '../Graph.js';
-import { findNodes } from './findNodes.js';
+import { Graph } from '../Graph';
+import { findNodes } from './findNodes';
 
 describe('findNodes', () => {
   type Node = { id: string; type: string };

@@ -1,1 +1,1 @@
-export { depthFirstSearch } from './depthFirstSearch.js';
+export { depthFirstSearch } from './depthFirstSearch';

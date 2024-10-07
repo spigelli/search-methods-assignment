@@ -1,7 +1,7 @@
-import { depthFirstSearch } from '../algorithms/depthFirstSearch/index.js';
-import { DepthFirstSearchOptions } from '../algorithms/depthFirstSearch/types.js';
-import { CycleError } from '../CycleError.js';
-import { Graph } from '../Graph.js';
+import { depthFirstSearch } from '../algorithms/depthFirstSearch/index';
+import { DepthFirstSearchOptions } from '../algorithms/depthFirstSearch/types';
+import { CycleError } from '../CycleError';
+import { Graph } from '../Graph';
 
 /**
  * Perform a depth first search to detect an eventual cycle.

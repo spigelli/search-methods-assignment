@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../Graph.js';
-import { indegree } from './indegree.js';
-import { outdegree } from './outdegree.js';
+import { Graph } from '../Graph';
+import { indegree } from './indegree';
+import { outdegree } from './outdegree';
 
 describe('outdegree', () => {
   it('Should compute outdegree.', function () {

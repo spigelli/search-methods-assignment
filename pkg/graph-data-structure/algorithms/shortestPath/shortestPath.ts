@@ -1,8 +1,8 @@
-import { Graph } from '../../Graph.js';
-import { NoInfer } from '../../types.js';
-import { dijkstra } from './dijkstra.js';
-import { getPath } from './getPath.js';
-import { TraversingTracks } from './types.js';
+import { Graph } from '../../Graph';
+import { NoInfer } from '../../types';
+import { dijkstra } from './dijkstra';
+import { getPath } from './getPath';
+import { TraversingTracks } from './types';
 
 /**
  * Dijkstra's Shortest Path Algorithm.

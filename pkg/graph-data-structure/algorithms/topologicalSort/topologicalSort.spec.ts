@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { Graph } from '../../Graph.js';
-import { comesBefore } from '../../test-utils.js';
-import { topologicalSort } from './index.js';
+import { Graph } from '../../Graph';
+import { comesBefore } from '../../test-utils';
+import { topologicalSort } from './index';
 
 describe('topologicalSort', () => {
   // This example is from Cormen et al. "Introduction to Algorithms" page 550

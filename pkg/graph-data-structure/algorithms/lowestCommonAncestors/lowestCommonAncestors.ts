@@ -1,5 +1,5 @@
-import { Graph } from '../../Graph.js';
-import { NoInfer } from '../../types.js';
+import { Graph } from '../../Graph';
+import { NoInfer } from '../../types';
 
 /**
  * Return an array containing the lowest common ancestors.

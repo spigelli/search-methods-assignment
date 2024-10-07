@@ -1,7 +1,7 @@
-import type { NoInfer } from '../../types.js';
+import type { NoInfer } from '../../types';
 
-import { Graph } from '../../Graph.js';
-import { shortestPath } from './shortestPath.js';
+import { Graph } from '../../Graph';
+import { shortestPath } from './shortestPath';
 
 export function shortestPaths<Node, LinkProps>(
   graph: Graph<Node, LinkProps>,

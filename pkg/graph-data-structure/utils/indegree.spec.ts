@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Graph } from '../Graph.js';
-import { indegree } from './indegree.js';
+import { Graph } from '../Graph';
+import { indegree } from './indegree';
 
 describe('indegree', () => {
   it('Should compute indegree.', function () {

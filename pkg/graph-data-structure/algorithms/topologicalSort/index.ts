@@ -1,2 +1,2 @@
-export { topologicalSort } from './topologicalSort.js';
-export type { TopologicalSortOptions } from './topologicalSort.js';
+export { topologicalSort } from './topologicalSort';
+export type { TopologicalSortOptions } from './topologicalSort';

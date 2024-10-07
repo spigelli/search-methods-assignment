@@ -37,7 +37,7 @@ export function CustomDefaultNode({
           <Badge variant="success" className="mt-1">Start Town</Badge>
         )}
         {isEnd && (
-          <Badge variant="info" className="mt-1">Start Town</Badge>
+          <Badge variant="info" className="mt-1">End Town</Badge>
         )}
       </div>
       <Handle

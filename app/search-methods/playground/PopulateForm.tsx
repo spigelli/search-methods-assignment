@@ -11,7 +11,11 @@ import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
 
 const scaleFactor = 1000
 
-export function PopulateForm() {
+export function PopulateForm({
+  setHasPopulated,
+}: {
+  setHasPopulated: (hasPopulated: boolean) => void
+}) {
   const { setNodes, setEdges } = useReactFlow<CustomDefaultNode, FloatingEdge>()
   return (
     <form
@@ -54,6 +58,7 @@ export function PopulateForm() {
         )
         setNodes(newNodes)
         setEdges(newEdges)
+        setHasPopulated(true)
       }}
     >
       <fieldset className="rounded-lg border p-4">

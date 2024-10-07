@@ -15,8 +15,11 @@ import { PopulateForm } from './PopulateForm'
 import { SearchForm } from './SearchForm'
 import { CustomControls } from './CustomControls';
 import { SearchProvider } from './SearchProvider';
+import { useState } from 'react';
 
 export function Playground() {
+  const [hasPopulated, setHasPopulated] = useState(false)
+
   return (
     <ReactFlowProvider>
       <SearchProvider>
@@ -31,8 +34,8 @@ export function Playground() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-6">
-                  <PopulateForm />
-                  <SearchForm />
+                  <PopulateForm setHasPopulated={setHasPopulated} />
+                  <SearchForm hasPopulated={hasPopulated} />
                 </CardContent>
               </Card>
               <div className="absolute bottom-4 left-4">

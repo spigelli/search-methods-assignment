@@ -89,7 +89,11 @@ const searchFormSchema = z.object({
   endTown: z.string(),
 });
 
-export function SearchForm() {
+export function SearchForm({
+  hasPopulated,
+}: {
+  hasPopulated: boolean;
+}) {
   const { getNodes, getEdges, setEdges } = useReactFlow<CustomDefaultNode>()
 
   const {
@@ -146,7 +150,10 @@ export function SearchForm() {
         return [...nonSearchEdges, ...newEdges]
       });
     }}>
-      <fieldset className="grid gap-6 rounded-lg border p-4">
+      <fieldset
+        className="grid gap-6 rounded-lg border p-4"
+        disabled={!hasPopulated}
+      >
         <legend className="-ml-1 px-1 text-sm font-medium">
           Search Algorithm Settings
         </legend>
@@ -202,7 +209,11 @@ export function SearchForm() {
           </div>
         </div>
       </fieldset>
-      <Button type="submit" className="w-full">
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={!hasPopulated}
+      >
         Run Search Algorithm
       </Button>
     </form>

@@ -160,9 +160,166 @@ function searchDFSPath(
       })
     }
   }
+  return visited
+}
+
+function searchBFSPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+) {
+  const visited: {
+    source: string;
+    target: string;
+  }[] = []
+
+  const foundEndTown = () => visited.some((edge) => edge.target === endTown)
+
+  const queue: {
+    id: string;
+    adjacentFrom: string;
+  }[] = [
+    { id: startTown, adjacentFrom: startTown },
+  ]
+
+  while (queue.length > 0 && !foundEndTown()) {
+    // Pop the first element from the queue
+    const {
+      id: currentTown,
+      adjacentFrom,
+    } = queue.shift() as { id: string; adjacentFrom: string }
+
+    // Unless the current town is the start town, add the edge to the visited list
+    if (currentTown !== startTown) {
+      visited.push({ source: adjacentFrom, target: currentTown })
+    }
+
+    // Add the adjacent towns to the queue
+    const adjacentTownsSet = graph.adjacent(currentTown)
+    if (adjacentTownsSet !== undefined) {
+      const adjacentTowns = Array.from(adjacentTownsSet)
+      // Sort the adjacent towns in ascending weight
+
+      adjacentTowns.sort((a, b) => {
+        const weightA = graph.getEdgeWeight(currentTown, a) || 0
+        const weightB = graph.getEdgeWeight(currentTown, b) || 0
+        return weightA - weightB
+      })
+      // Add the adjacent towns to the queue if they have not been visited
+      adjacentTowns.forEach((town) => {
+        if (!visited.some((edge) => edge.target === town)) {
+          queue.push({ id: town, adjacentFrom: currentTown })
+        }
+      })
+    }
+  }
 
   return visited
 }
+
+/**
+ * Performs a depth-limited search to find a path between two towns.
+ * Essentially a dfs with a depth limit.
+ */
+function searchDLSPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+  maxDepth: number,
+) {
+  const visited: {
+    source: string;
+    target: string;
+  }[] = []
+  const stack = [
+    {id: startTown, adjacentFrom: startTown, depth: 0}
+  ]
+
+  while (stack.length > 0 && !visited.some(visited => visited.target === endTown)) {
+    // Pop the last element from the stack
+    const {
+      id: currentTown,
+      depth: currentTownDepth,
+      adjacentFrom,
+    } = stack.pop() as {
+      id: string,
+      depth: number,
+      adjacentFrom: string
+    }
+
+    // Unless the current town is the start town, add the edge to the visited list
+    if (currentTown !== startTown) {
+      visited.push({ source: adjacentFrom, target: currentTown })
+    }
+
+    // Add the adjacent towns to the stack
+    const adjacentTownsSet = graph.adjacent(currentTown)
+    if (adjacentTownsSet !== undefined) {
+      const adjacentTowns = Array.from(adjacentTownsSet)
+      // Sort the adjacent towns in ascending weight
+
+      adjacentTowns.sort((a, b) => {
+        const weightA = graph.getEdgeWeight(currentTown, a) || 0
+        const weightB = graph.getEdgeWeight(currentTown, b) || 0
+        return weightB - weightA
+      })
+      // Add the adjacent towns to the stack if they have not been visited
+      adjacentTowns.forEach((town) => {
+        if (!visited.some((edge) => edge.target === town) && currentTownDepth < maxDepth) {
+          stack.push({ id: town, adjacentFrom: currentTown, depth: currentTownDepth + 1 })
+        }
+      })
+    }
+  }
+  return {
+    endFound: visited.some(visited => visited.target === endTown),
+    visited
+  }
+}
+
+/**
+ * Performs an iterative deepening search to find a path between two towns.
+ * Essentially a dfs with increasing depth limits.
+ * NOTE: For an undirected graph, should IDDFS's calls to DLS include the visited set? cause otherwise this will create cycles.
+ */
+function searchIDDFSPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+) {
+  let found = false
+  let currentMaxDepth = 0
+  const visited: {
+    source: string;
+    target: string;
+  }[] = []
+  while(!found) {
+    const { endFound, visited: currentVisited } = searchDLSPath(graph, startTown, endTown, currentMaxDepth)
+    visited.push(...currentVisited)
+    found = endFound
+    currentMaxDepth++
+  }
+  return visited
+}
+
+type SearchFunction = (
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+) => {
+  source: string;
+  target: string;
+}[]
+
+const searchMethodDict: Record<SearchMethodId, SearchFunction> = {
+  'dfs': searchDFSPath,
+  'bfs': searchBFSPath,
+  'iddfs': searchIDDFSPath,
+  'bestfs': searchBFSPath,
+  'astar': searchBFSPath,
+}
+
+
 export async function search(
   algorithm: SearchMethodId,
   startTown: string,
@@ -183,6 +340,6 @@ export async function search(
     graph.addEdge(edge.target, edge.source, edge.weight);
   })
 
-  const path = searchDFSPath(graph, startTown, endTown)
+  const path = searchMethodDict[algorithm](graph, startTown, endTown)
   return path
 }

@@ -16,6 +16,7 @@ import { SearchForm } from './SearchForm'
 import { CustomControls } from './CustomControls';
 import { SearchProvider } from './SearchProvider';
 import { useState } from 'react';
+import { Toaster } from '@/components/ui/toaster';
 
 export function Playground() {
   const [hasPopulated, setHasPopulated] = useState(false)
@@ -40,6 +41,9 @@ export function Playground() {
               </Card>
               <div className="absolute bottom-4 left-4">
                 <CustomControls />
+              </div>
+              <div className="absolute bottom-4 right-4">
+                <Toaster />
               </div>
             </div>
           </div>

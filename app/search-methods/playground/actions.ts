@@ -427,6 +427,14 @@ export async function search(
     graph.addEdge(edge.target, edge.source, edge.weight);
   })
 
+  const startTime = performance.now()
   const path = await searchMethodDict[algorithm](graph, startTown, endTown)
-  return path
+  const endTime = performance.now()
+
+  const timeTakenMs = endTime - startTime
+
+  return {
+    path,
+    timeTakenMs
+  }
 }

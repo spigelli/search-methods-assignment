@@ -15,6 +15,7 @@ import { useCallback } from 'react';
 import { useSearch } from './SearchProvider';
 import { CustomDefaultNode } from './CustomDefaultNode';
 import { z } from 'zod';
+import { useToast } from '@/components/hooks/use-toast';
 
 const towns = [
   'Abilene',
@@ -94,6 +95,8 @@ export function SearchForm({
 }: {
   hasPopulated: boolean;
 }) {
+  const { toast } = useToast()
+
   const { getNodes, getEdges, setEdges } = useReactFlow<CustomDefaultNode>()
 
   const {
@@ -123,7 +126,11 @@ export function SearchForm({
       const nodes = flowNodesToGraphNodes(flowNodes)
       const edges = flowEdgesToGraphEdges(flowEdges)
 
-      const path = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
+      const {
+        path,
+        timeTakenMs,
+      } = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
+
       const newEdges = path.map(({ source, target }, index) => ({
         id: `search-edge-${index}`,
         source,
@@ -149,6 +156,10 @@ export function SearchForm({
         const nonSearchEdges = prevEdges.filter((edge) => !edge.id.startsWith('search-edge-'))
         return [...nonSearchEdges, ...newEdges]
       });
+      toast({
+        title: `Successfully ran ${searchMethodNames[algorithm as SearchMethodId]} algorithm`,
+        description: `Searching took ${timeTakenMs.toFixed(4)}ms.`,
+      })
     }}>
       <fieldset
         className="grid gap-6 rounded-lg border p-4"

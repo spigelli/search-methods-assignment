@@ -5,7 +5,7 @@ import path from 'path'
 import { parse } from 'csv-parse/sync'
 import { z } from 'zod'
 import { Graph } from '@/pkg/graph-data-structure'
-import { SearchMethodId } from './util';
+import { getCartesianDistance, SearchMethodId } from './util';
 
 async function parseCoordinates() {
   // Construct the full path to the CSV file in the public folder
@@ -72,7 +72,7 @@ export type GraphData = Awaited<ReturnType<typeof getGraphData>>
 /**
  * Use depth-first search to find a path between two towns avoiding cycles.
  */
-function searchDFS(
+async function searchDFS(
   graph: Graph,
   startTown: string,
   endTown: string,
@@ -110,7 +110,7 @@ function searchDFS(
 /**
  * Operates similarly to the `searchDFS` function, but with returns the path as a list of edges.
  */
-function searchDFSPath(
+async function searchDFSPath(
   graph: Graph,
   startTown: string,
   endTown: string,
@@ -163,7 +163,7 @@ function searchDFSPath(
   return visited
 }
 
-function searchBFSPath(
+async function searchBFSPath(
   graph: Graph,
   startTown: string,
   endTown: string,
@@ -282,7 +282,7 @@ function searchDLSPath(
  * Essentially a dfs with increasing depth limits.
  * NOTE: For an undirected graph, should IDDFS's calls to DLS include the visited set? cause otherwise this will create cycles.
  */
-function searchIDDFSPath(
+async function searchIDDFSPath(
   graph: Graph,
   startTown: string,
   endTown: string,
@@ -302,23 +302,111 @@ function searchIDDFSPath(
   return visited
 }
 
+async function searchHeuristic(
+  graph: Graph,
+  startTown: string,
+  endTown: string,
+  heuristic: (coordinates: GraphData['coordinates'], currentTown: string, potentialNextTown: string, endTown: string) => number
+) {
+  const coordinates = await parseCoordinates()
+
+  // A priority queue to hold nodes, ordered by heuristic cost
+  const priorityQueue = [{
+    id: startTown,
+    adjacentFrom: startTown,
+    cost: 0,
+  }];
+  
+  const visited: {
+    source: string;
+    target: string;
+  }[] = []
+  
+  // Helper function to check if we've reached the goal
+  const foundEndTown = () => visited.some((edge) => edge.target === endTown);
+  
+  while (priorityQueue.length > 0 && !foundEndTown()) {
+    // Remove the node with the smallest heuristic value (front of queue)
+    priorityQueue.sort((a, b) => a.cost - b.cost);
+    const current = priorityQueue.shift();
+    if (current === undefined) {
+      throw new Error('Priority queue is empty');
+    }
+    const {
+      id: currentTown,
+      adjacentFrom,
+    } = current
+    
+    // Add the edge to the visited list (if not the start)
+    if (currentTown !== startTown) {
+      visited.push({ source: adjacentFrom, target: currentTown });
+    }
+    
+    // Get the adjacent towns and add them to the priority queue if not already visited
+    const adjacentTownsSet = graph.adjacent(currentTown);
+    if (adjacentTownsSet !== undefined) {
+      const adjacentTowns = Array.from(adjacentTownsSet);
+      
+      adjacentTowns.forEach((town) => {
+        if (!visited.some((edge) => edge.target === town)) {
+          const cost = heuristic(coordinates, currentTown, town, endTown); // Use heuristic function for cost estimation
+          priorityQueue.push({ id: town, adjacentFrom: currentTown, cost });
+        }
+      });
+    }
+  }
+
+  return visited;
+}
+
+async function searchBestFirstPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string
+) {
+  return await searchHeuristic(
+    graph,
+    startTown,
+    endTown,
+    (coordinates, currentTown, potentialNextTown, endTown) => (
+      getCartesianDistance(coordinates, potentialNextTown, endTown)
+    )
+  );
+}
+
+async function searchAStarPath(
+  graph: Graph,
+  startTown: string,
+  endTown: string
+) {
+  return await searchHeuristic(
+    graph,
+    startTown,
+    endTown,
+    (coordinates, currentTown, potentialNextTown, endTown) => {
+      const distanceToGoal = getCartesianDistance(coordinates, potentialNextTown, endTown);
+      const distanceFromCurrent = getCartesianDistance(coordinates, currentTown, potentialNextTown);
+      return distanceToGoal + distanceFromCurrent;
+    }
+  );
+}
+
 type SearchFunction = (
   graph: Graph,
   startTown: string,
   endTown: string,
-) => {
+) => Promise<{
   source: string;
   target: string;
-}[]
+}[]>
 
 const searchMethodDict: Record<SearchMethodId, SearchFunction> = {
   'dfs': searchDFSPath,
   'bfs': searchBFSPath,
   'iddfs': searchIDDFSPath,
-  'bestfs': searchBFSPath,
-  'astar': searchBFSPath,
+  'bestfs': searchBestFirstPath,
+  'astar': searchAStarPath,
 }
-
 
 export async function search(
   algorithm: SearchMethodId,
@@ -332,7 +420,6 @@ export async function search(
   }[]
 ) {
 
-
   const graph = new Graph()
   nodes.forEach((node) => graph.addNode(node))
   edges.forEach((edge) => {
@@ -340,6 +427,6 @@ export async function search(
     graph.addEdge(edge.target, edge.source, edge.weight);
   })
 
-  const path = searchMethodDict[algorithm](graph, startTown, endTown)
+  const path = await searchMethodDict[algorithm](graph, startTown, endTown)
   return path
 }

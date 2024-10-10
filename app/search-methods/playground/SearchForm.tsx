@@ -129,6 +129,7 @@ export function SearchForm({
       const {
         path,
         timeTakenMs,
+        summedWeight,
         isError,
       } = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
 
@@ -166,7 +167,7 @@ export function SearchForm({
       ) : (
         toast({
           title: `Successfully ran ${searchMethodNames[algorithm as SearchMethodId]} algorithm`,
-          description: `Searching took ${timeTakenMs.toFixed(4)}ms.`,
+          description: `Searching took ${timeTakenMs.toFixed(4)}ms. Total path length is ${summedWeight.toFixed(2)}km.`,
         })
       )
     }}>

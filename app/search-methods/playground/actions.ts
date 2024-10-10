@@ -449,6 +449,8 @@ function refinePath(
     },
     [],
   )
+
+  return uniquePath
 }
 
 export async function search(
@@ -478,9 +480,15 @@ export async function search(
   
   const isError = path.length === 0
 
+  const summedWeight = refinePath(path, startTown, endTown).reduce((acc, edge) => {
+    const weight = graph.getEdgeWeight(edge.source, edge.target)
+    return acc + (weight || 0)
+  }, 0)
+
   return {
     path,
     timeTakenMs,
+    summedWeight,
     isError,
   }
 }

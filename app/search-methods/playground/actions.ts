@@ -1,11 +1,15 @@
-'use server'
+'use server';
 
-import { promises as fs } from 'fs'
-import path from 'path'
-import { parse } from 'csv-parse/sync'
-import { z } from 'zod'
-import { Graph } from '@/pkg/graph-data-structure'
-import { getCartesianDistance, SearchMethodId } from './util';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { Graph } from '@/pkg/graph-data-structure';
+import { parse } from 'csv-parse/sync';
+import { z } from 'zod';
+
+
+
+import { SearchMethodId, getCartesianDistance } from './util';
+
 
 async function parseCoordinates() {
   // Construct the full path to the CSV file in the public folder
@@ -160,6 +164,9 @@ async function searchDFSPath(
       })
     }
   }
+  if (!foundEndTown()) {
+    return []
+  }
   return visited
 }
 
@@ -212,6 +219,9 @@ async function searchBFSPath(
         }
       })
     }
+  }
+  if (!foundEndTown()) {
+    return []
   }
 
   return visited
@@ -293,11 +303,14 @@ async function searchIDDFSPath(
     source: string;
     target: string;
   }[] = []
-  while(!found) {
+  while(!found && currentMaxDepth < graph.nodes.size) {
     const { endFound, visited: currentVisited } = searchDLSPath(graph, startTown, endTown, currentMaxDepth)
     visited.push(...currentVisited)
     found = endFound
     currentMaxDepth++
+  }
+  if (!found) {
+    return []
   }
   return visited
 }
@@ -355,7 +368,9 @@ async function searchHeuristic(
       });
     }
   }
-
+  if (!foundEndTown()) {
+    return [];
+  }
   return visited;
 }
 
@@ -408,6 +423,34 @@ const searchMethodDict: Record<SearchMethodId, SearchFunction> = {
   'astar': searchAStarPath,
 }
 
+/**
+ * Takes a path, start town and end town and refines the path to remove any
+ * sub-paths that do not lead to the end town. Additionally, it removes any
+ * duplicate paths.
+ */
+function refinePath(
+  path: {
+    source: string;
+    target: string;
+  }[],
+  startTown: string,
+  endTown: string
+) {
+  // Remove all duplicate paths
+  const uniquePath = path.reduce(
+    (acc: {source: string, target: string}[], edge, index) => {
+      if (index === 0) {
+        return [edge]
+      }
+      if (!acc.some((uniqueEdge) => uniqueEdge.source === edge.source && uniqueEdge.target === edge.target)) {
+        return [...acc, edge]
+      }
+      return acc;
+    },
+    [],
+  )
+}
+
 export async function search(
   algorithm: SearchMethodId,
   startTown: string,
@@ -432,9 +475,12 @@ export async function search(
   const endTime = performance.now()
 
   const timeTakenMs = endTime - startTime
+  
+  const isError = path.length === 0
 
   return {
     path,
-    timeTakenMs
+    timeTakenMs,
+    isError,
   }
 }

@@ -129,6 +129,7 @@ export function SearchForm({
       const {
         path,
         timeTakenMs,
+        isError,
       } = await search(algorithm as SearchMethodId, startTown, endTown, nodes, edges)
 
       const newEdges = path.map(({ source, target }, index) => ({
@@ -156,10 +157,18 @@ export function SearchForm({
         const nonSearchEdges = prevEdges.filter((edge) => !edge.id.startsWith('search-edge-'))
         return [...nonSearchEdges, ...newEdges]
       });
-      toast({
-        title: `Successfully ran ${searchMethodNames[algorithm as SearchMethodId]} algorithm`,
-        description: `Searching took ${timeTakenMs.toFixed(4)}ms.`,
-      })
+      console.log('isError', isError)
+      isError ? (
+        toast({
+        title: `Error running ${searchMethodNames[algorithm as SearchMethodId]} algorithm`,
+        description: `Could not find a path between ${startTown} and ${endTown}.`,
+        })
+      ) : (
+        toast({
+          title: `Successfully ran ${searchMethodNames[algorithm as SearchMethodId]} algorithm`,
+          description: `Searching took ${timeTakenMs.toFixed(4)}ms.`,
+        })
+      )
     }}>
       <fieldset
         className="grid gap-6 rounded-lg border p-4"

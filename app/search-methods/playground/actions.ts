@@ -10,13 +10,24 @@ import { z } from 'zod';
 
 import { SearchMethodId, getHaversineDistance } from './util';
 
+const isProd = process.env.VERCEL_ENV && process.env.VERCEL_ENV === 'production';
+const url = isProd ? 'https://search-methods-assignment.vercel.app/' : 'http://localhost:3000/'
 
 async function parseCoordinates() {
   // Construct the full path to the CSV file in the public folder
-  const filePath = path.join(process.cwd(), 'public', 'coordinates.csv')
+  // const filePath = path.join(process.cwd(), 'public', 'coordinates.csv')
   try {
     // Read the file
-    const fileContent = await fs.readFile(filePath, 'utf-8')
+    const fileContent = await fetch(
+      `${url}coordinates.csv`,
+      {
+        headers: {
+          'Content-Type': 'text/csv',
+          'Accept': 'text/csv',
+        },
+        method: 'GET',
+      }
+    ).then((res) => res.text())
 
     // Parse the CSV content
     const records = parse(fileContent, {
@@ -46,9 +57,17 @@ async function parseCoordinates() {
 const adjacencySchema = z.array(z.tuple([z.string(), z.string()]))
 
 const parseAdjacencies = async () => {
-  const filePath = path.join(process.cwd(), 'public', 'Adjacencies.txt')
   try {
-    const fileContent = await fs.readFile(filePath, 'utf-8')
+    const fileContent = await fetch(
+      `${url}adjacencies.txt`,
+      {
+        headers: {
+          'Content-Type': 'text/plain',
+          'Accept': 'text/plain',
+        },
+        method: 'GET',
+      }
+    ).then((res) => res.text())
     const lines = fileContent.split('\n')
     // Some of the lines contain trailing whitespace, so we trim them
     const trimmedLines = lines.map((line) => line.trim())

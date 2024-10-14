@@ -59,7 +59,7 @@ const adjacencySchema = z.array(z.tuple([z.string(), z.string()]))
 const parseAdjacencies = async () => {
   try {
     const fileContent = await fetch(
-      `${url}adjacencies.txt`,
+      `${url}Adjacencies.txt`,
       {
         headers: {
           'Content-Type': 'text/plain',

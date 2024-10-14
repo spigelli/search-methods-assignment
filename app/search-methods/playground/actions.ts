@@ -319,10 +319,9 @@ async function searchHeuristic(
   graph: Graph,
   startTown: string,
   endTown: string,
-  heuristic: (coordinates: GraphData['coordinates'], currentTown: string, potentialNextTown: string, endTown: string) => number
+  heuristic: (coordinates: GraphData['coordinates'], currentTown: string, potentialNextTown: string, endTown: string) => number,
+  coordinates: GraphData['coordinates']
 ) {
-  const coordinates = await parseCoordinates()
-
   // A priority queue to hold nodes, ordered by heuristic cost
   const priorityQueue = [{
     id: startTown,
@@ -377,7 +376,9 @@ async function searchHeuristic(
 async function searchBestFirstPath(
   graph: Graph,
   startTown: string,
-  endTown: string
+  endTown: string,
+  coordinates: GraphData['coordinates']
+
 ) {
   return await searchHeuristic(
     graph,
@@ -385,14 +386,16 @@ async function searchBestFirstPath(
     endTown,
     (coordinates, currentTown, potentialNextTown, endTown) => (
       getCartesianDistance(coordinates, potentialNextTown, endTown)
-    )
+    ),
+    coordinates
   );
 }
 
 async function searchAStarPath(
   graph: Graph,
   startTown: string,
-  endTown: string
+  endTown: string,
+  coordinates: GraphData['coordinates']
 ) {
   return await searchHeuristic(
     graph,
@@ -402,7 +405,8 @@ async function searchAStarPath(
       const distanceToGoal = getCartesianDistance(coordinates, potentialNextTown, endTown);
       const distanceFromCurrent = getCartesianDistance(coordinates, currentTown, potentialNextTown);
       return distanceToGoal + distanceFromCurrent;
-    }
+    },
+    coordinates
   );
 }
 
@@ -410,6 +414,7 @@ type SearchFunction = (
   graph: Graph,
   startTown: string,
   endTown: string,
+  coordinates: GraphData['coordinates']
 ) => Promise<{
   source: string;
   target: string;
@@ -472,8 +477,10 @@ export async function search(
     graph.addEdge(edge.target, edge.source, edge.weight);
   })
 
+  const coordinates = (await getGraphData()).coordinates
+
   const startTime = performance.now()
-  const path = await searchMethodDict[algorithm](graph, startTown, endTown)
+  const path = await searchMethodDict[algorithm](graph, startTown, endTown, coordinates)
   const endTime = performance.now()
 
   const timeTakenMs = endTime - startTime

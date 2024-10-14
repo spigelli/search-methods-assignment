@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 
 
-import { SearchMethodId, getCartesianDistance } from './util';
+import { SearchMethodId, getHaversineDistance } from './util';
 
 
 async function parseCoordinates() {
@@ -385,7 +385,7 @@ async function searchBestFirstPath(
     startTown,
     endTown,
     (coordinates, currentTown, potentialNextTown, endTown) => (
-      getCartesianDistance(coordinates, potentialNextTown, endTown)
+      getHaversineDistance(coordinates, potentialNextTown, endTown)
     ),
     coordinates
   );
@@ -402,8 +402,8 @@ async function searchAStarPath(
     startTown,
     endTown,
     (coordinates, currentTown, potentialNextTown, endTown) => {
-      const distanceToGoal = getCartesianDistance(coordinates, potentialNextTown, endTown);
-      const distanceFromCurrent = getCartesianDistance(coordinates, currentTown, potentialNextTown);
+      const distanceToGoal = getHaversineDistance(coordinates, potentialNextTown, endTown);
+      const distanceFromCurrent = getHaversineDistance(coordinates, currentTown, potentialNextTown);
       return distanceToGoal + distanceFromCurrent;
     },
     coordinates

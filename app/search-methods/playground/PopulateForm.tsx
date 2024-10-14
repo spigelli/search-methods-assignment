@@ -5,7 +5,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Icons } from '@/components/icons'
 
 import { getGraphData } from './actions'
-import { getCartesianDistance } from './util';
+import { getHaversineDistance } from './util';
 import { CustomDefaultNode } from './CustomDefaultNode';
 import { FloatingEdge } from '@/components/react-flow/FloatingEdge';
 
@@ -37,7 +37,7 @@ export function PopulateForm({
         }))
         const newEdges = graphData.adjacencies.map(
           ([source, target], index) => {
-            const cartesianDistance = getCartesianDistance(
+            const cartesianDistance = getHaversineDistance(
               graphData.coordinates,
               source,
               target

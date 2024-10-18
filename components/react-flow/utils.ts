@@ -1,4 +1,4 @@
-import { CustomDefaultNode } from '@/app/search-methods/playground/CustomDefaultNode';
+import { CustomDefaultNode } from '@/app/live-demos/search-methods/playground/CustomDefaultNode';
 import { Position, MarkerType, InternalNode } from '@xyflow/react';
 
 // this helper function returns the intersection point

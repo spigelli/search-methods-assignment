@@ -1,3 +1,5 @@
+import { title } from "process";
+
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
@@ -10,8 +12,12 @@ export const siteConfig = {
       href: '/',
     },
     {
-      title: 'Search Methods',
-      href: '/search-methods/playground',
+      title: 'Live Demos',
+      href: '/live-demos',
+    },
+    {
+      title: 'Experience',
+      href: '/experience',
     },
   ],
   links: {

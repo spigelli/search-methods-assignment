@@ -21,7 +21,15 @@ import Link from "next/link";
 
 export default function Demos() {
   return (
-    <div className="w-full max-w-4xl">
+    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+      <div className="flex max-w-[980px] flex-col items-start gap-2">
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+          Live Demos
+        </h1>
+        <p className="max-w-[700px] text-lg text-muted-foreground">
+          A collection of live demos that showcase various algorithms and concepts.
+        </p>
+      </div>
       <div className="min-h-[500px] p-4  flex flex-col justify-center  rounded-lg space-y-4">
         <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {cards.map((card) => (
@@ -40,6 +48,6 @@ export default function Demos() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

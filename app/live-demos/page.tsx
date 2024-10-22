@@ -30,7 +30,7 @@ export default function Demos() {
           A collection of live demos that showcase various algorithms and concepts.
         </p>
       </div>
-      <div className="min-h-[500px] p-4  flex flex-col justify-center  rounded-lg space-y-4">
+      <div className="min-h-[500px] p-4 flex flex-col justify-center  rounded-lg space-y-4">
         <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {cards.map((card) => (
             <Link

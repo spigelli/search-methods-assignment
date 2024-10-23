@@ -1,4 +1,5 @@
-from flask import Flask
+import json
+from flask import Flask, request
 import numpy as np
 from scipy.special import softmax
 import random
@@ -6,21 +7,6 @@ app = Flask(__name__)
 
 facilitators = [
     'Lock', 'Glen', 'Banks', 'Richards', 'Shaw', 'Singer', 'Uther', 'Tyler', 'Numen', 'Zeldin'
-]
-
-activities = [
-]
-
-rooms = [
-    { "name": "Slater 003", "capacity": 45 },
-    { "name": "Roman 216", "capacity": 30 },
-    { "name": "Loft 206", "capacity": 75 },
-    { "name": "Roman 201", "capacity": 50 },
-    { "name": "Loft 310", "capacity": 108 },
-    { "name": "Beach 201", "capacity": 60 },
-    { "name": "Beach 301", "capacity": 75 },
-    { "name": "Logos 325", "capacity": 450 },
-    { "name": "Frank 119", "capacity": 60 },
 ]
 
 roomCapacities = {
@@ -37,13 +23,13 @@ roomCapacities = {
 
 activities = [
     {
-        "name": "SLA100A",
+        "name": "SLA101A",
         "enrollment": 50,
         "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
         "other_facilitators": ["Numen", "Richards"]
     },
     {
-        "name": "SLA100B",
+        "name": "SLA101B",
         "enrollment": 50,
         "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
         "other_facilitators": ["Numen", "Richards"],
@@ -104,6 +90,64 @@ activities = [
     },
 ]
 
+activitiesByName = {
+    "SLA101A": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
+        "other_facilitators": ["Numen", "Richards"]
+    },
+    "SLA101B": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
+        "other_facilitators": ["Numen", "Richards"],
+    },
+    "SLA191A": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
+        "other_facilitators": ["Numen", "Richards"],
+    },
+    "SLA191B": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Glen", "Lock", "Banks", "Zeldin"],
+        "other_facilitators": ["Numen", "Richards"],
+    },
+    "SLA201": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Glen", "Banks", "Zeldin", "Shaw"],
+        "other_facilitators": ["Numen", "Richards", "Singer"],
+    },
+    "SLA291": {
+        "enrollment": 50,
+        "preferred_facilitators": ["Lock", "Banks", "Zeldin", "Singer"],
+        "other_facilitators": ["Numen", "Richards", "Shaw", "Tyler"],
+    },
+    "SLA303": {
+        "enrollment": 60,
+        "preferred_facilitators": ["Glen", "Zeldin", "Banks"],
+        "other_facilitators": ["Numen", "Singer", "Shaw"],
+    },
+    "SLA304": {
+        "enrollment": 25,
+        "preferred_facilitators": ["Glen", "Banks", "Tyler"],
+        "other_facilitators": ["Numen", "Singer", "Shaw", "Richards", "Uther", "Zeldin"],
+    },
+    "SLA394": {
+        "enrollment": 20,
+        "preferred_facilitators": ["Tyler", "Singer"],
+        "other_facilitators": ["Richards", "Zeldin"],
+    },
+    "SLA449": {
+        "enrollment": 60,
+        "preferred_facilitators": ["Tyler", "Singer", "Shaw"],
+        "other_facilitators": ["Zeldin", "Uther"],
+    },
+    "SLA451": {
+        "enrollment": 100,
+        "preferred_facilitators": ["Tyler", "Singer", "Shaw"],
+        "other_facilitators": ["Zeldin", "Uther", "Richards", "Banks"],
+    },
+}
+
 times = [
     "10 AM",
     "11 AM",
@@ -114,6 +158,43 @@ times = [
 ]
 
 class FitnessRules:
+    @staticmethod
+    def _is_consecutive(a, b):
+        """Returns true if the two times are consecutive."""
+        return (
+            times.index(a) + 1 == times.index(b)
+            or times.index(a) - 1 == times.index(b)
+        )
+
+    @staticmethod
+    def _is_separated_by_one_hour(a, b):
+        """Returns true if there is an hour in between the two times."""
+        return (
+            times.index(a) + 2 == times.index(b)
+            or times.index(a) - 2 == times.index(b)
+        )
+
+    @staticmethod
+    def _is_four_hours_apart(a, b):
+        """
+        Returns True if the two times are separated by 4 hours.
+        (e.g. 10 AM and 2 PM)
+        """
+        return (
+            times.index(a) + 4 == times.index(b)
+            or times.index(a) - 4 == times.index(b)
+        )
+    
+    @staticmethod
+    def _one_in_far_building(a, b):
+        """
+        Returns True if one of the rooms is in Roman or Beach and the other isn't.
+        """
+        return (
+            (a in ["Roman 216", "Beach 201"] and b not in ["Roman 216", "Beach 201"])
+            or (b in ["Roman 216", "Beach 201"] and a not in ["Roman 216", "Beach 201"])
+        )
+
     # Activity is scheduled at the same time in the same room as another of the activities: -0.5
     @staticmethod
     def schedule_conflict(new_assignment, existing_assignments):
@@ -144,15 +225,15 @@ class FitnessRules:
     # Activities is overseen by some other facilitator: -0.1
     @staticmethod
     def facilitator_preference(new_assignment, existing_assignments):
-        for activity in activities:
-            if activity["name"] == new_assignment["activity"]:
-                if new_assignment["facilitator"] in activity["preferred_facilitators"]:
-                    return 0.5
-                elif new_assignment["facilitator"] in activity["other_facilitators"]:
-                    return 0.2
-                else:
-                    return -0.1
-        return 0
+        new_assignment_facilitator = new_assignment["facilitator"]
+        new_assignment_activity = new_assignment["activity"]
+        activityReference = activitiesByName[new_assignment_activity]
+        if new_assignment_facilitator in activityReference["preferred_facilitators"]:
+            return 0.5
+        elif new_assignment_facilitator in activityReference["other_facilitators"]:
+            return 0.2
+        else:
+            return -0.1
 
     # Activity facilitator is scheduled for only 1 activity in this time slot: + 0.2
     # Activity facilitator is scheduled for more than one activity at the same time: - 0.2
@@ -180,11 +261,9 @@ class FitnessRules:
         for assignment in existing_assignments:
             if assignment["facilitator"] == facilitator:
                 count += 1
-
         if facilitator == "Tyler" and count < 2:
             return 0
-
-        if count > 4:
+        elif count > 4:
             return -0.5
         elif count <= 2:
             return -0.4
@@ -197,53 +276,31 @@ class FitnessRules:
     # It’s fine if neither is in one of those buildings, of activity; we just want to avoid having consecutive activities being widely separated.
     @staticmethod
     def facilitator_consecutive_time_slots(new_assignment, existing_assignments):
-        isConsecutive = lambda a, b: (
-            (a == "10 AM" and b == "11 AM") or
-            (a == "11 AM" and b == "12 PM") or
-            (a == "12 PM" and b == "1 PM") or
-            (a == "1 PM" and b == "2 PM") or
-            (a == "2 PM" and b == "3 PM")
-        )
-
         for assignment in existing_assignments:
             if assignment["facilitator"] == new_assignment["facilitator"]:
-                if isConsecutive(assignment["time"], new_assignment["time"]) or isConsecutive(new_assignment["time"], assignment["time"]):
-                    if assignment["activity"] != new_assignment["activity"]:
-                        if (
-                            (assignment["room"] in ["Roman 216", "Beach 201"] and new_assignment["room"] not in ["Roman 216", "Beach 201"]) or
-                            (new_assignment["room"] in ["Roman 216", "Beach 201"] and assignment["room"] not in ["Roman 216", "Beach 201"])
-                        ):
-                            return -0.4
+                if FitnessRules._is_consecutive(assignment["time"], new_assignment["time"]):
+                    if FitnessRules._one_in_far_building(assignment["room"], new_assignment["room"]):
+                        return -0.4
+                    else:
                         return 0.5
         return 0
 
     # The 2 sections of SLA 101 are more than 4 hours apart: + 0.5
     # Both sections of SLA 101 are in the same time slot: -0.5
-    @staticmethod
-    def activity_specific_adjustments_sla_101(new_assignment, existing_assignments):
-        if new_assignment["activity"] == "SLA101":
-            for assignment in existing_assignments:
-                if assignment["activity"] == "SLA101":
-                    if (
-                        (assignment["time"] == "10 AM" and new_assignment["time"] == "3 PM") or
-                        (assignment["time"] == "3 PM" and new_assignment["time"] == "10 AM")
-                    ):
-                        return 0.5
-                    elif assignment["time"] == new_assignment["time"]:
-                        return -0.5
-        return 0
-
     # The 2 sections of SLA 191 are more than 4 hours apart: + 0.5
     # Both sections of SLA 191 are in the same time slot: -0.5
     @staticmethod
-    def activity_specific_adjustments_sla_191(new_assignment, existing_assignments):
-        if new_assignment["activity"] == "SLA191":
+    def activity_specific_adjustments_sla(new_assignment, existing_assignments):
+        new_activity = new_assignment["activity"]
+        new_assignment_is_101 = new_activity.startswith("SLA191")
+        new_assignment_is_191 = new_activity.startswith("SLA101")
+        if new_assignment_is_101 or new_assignment_is_191:
             for assignment in existing_assignments:
-                if assignment["activity"] == "SLA191":
-                    if (
-                        (assignment["time"] == "10 AM" and new_assignment["time"] == "3 PM") or
-                        (assignment["time"] == "3 PM" and new_assignment["time"] == "10 AM")
-                    ):
+                if (
+                    (new_assignment_is_101 and assignment["activity"].startswith("SLA101")) or
+                    (new_assignment_is_191 and assignment["activity"].startswith("SLA191"))
+                ):
+                    if FitnessRules._is_four_hours_apart(assignment["time"], new_assignment["time"]):
                         return 0.5
                     elif assignment["time"] == new_assignment["time"]:
                         return -0.5
@@ -254,54 +311,42 @@ class FitnessRules:
     # It’s fine if neither is in one of those buildings, of activity; we just want to avoid having consecutive activities being widely separated.
     @staticmethod
     def activity_specific_adjustments_sla_191_and_sla_101(new_assignment, existing_assignments):
-        isConsecutive = lambda a, b: (
-            (a == "10 AM" and b == "11 AM") or
-            (a == "11 AM" and b == "12 PM") or
-            (a == "12 PM" and b == "1 PM") or
-            (a == "1 PM" and b == "2 PM") or
-            (a == "2 PM" and b == "3 PM")
-        )
-
-        if new_assignment["activity"] == "SLA191" or new_assignment["activity"] == "SLA101":
+        new_assignment_activity = new_assignment["activity"]
+        new_assignment_is_101 = new_assignment_activity.startswith("SLA191")
+        new_assignment_is_191 = new_assignment_activity.startswith("SLA101")
+        if new_assignment_is_101 or new_assignment_is_191:
             for assignment in existing_assignments:
+                current_activity = assignment["activity"]
                 if (
-                    (assignment["activity"] == "SLA191" and new_assignment["activity"] == "SLA101") or
-                    (assignment["activity"] == "SLA101" and new_assignment["activity"] == "SLA191")
+                    (current_activity.startswith("SLA101") and new_assignment_is_191) or
+                    (current_activity.startswith("SLA191") and new_assignment_is_101)
                 ):
-                    if isConsecutive(assignment["time"], new_assignment["time"]) or isConsecutive(new_assignment["time"], assignment["time"]):
-                        if assignment["activity"] != new_assignment["activity"]:
-                            if (
-                                (assignment["room"] in ["Roman 216", "Beach 201"] and new_assignment["room"] not in ["Roman 216", "Beach 201"]) or
-                                (new_assignment["room"] in ["Roman 216", "Beach 201"] and assignment["room"] not in ["Roman 216", "Beach 201"])
-                            ):
+                    if FitnessRules._is_consecutive(assignment["time"], new_assignment["time"]):
+                        if current_activity != new_assignment_activity:
+                            if (FitnessRules._one_in_far_building(assignment["room"], new_assignment["room"])):
                                 return -0.4
-                            return 0.5
+                            else:
+                                return 0.5
         return 0
 
-#   - A section of SLA 191 and a section of SLA 101 are taught separated by 1 hour (e.g., 10 AM & 12:00 Noon): + 0.25
-#   - A section of SLA 191 and a section of SLA 101 are taught in the same time slot: -0.25
+    #  A section of SLA 191 and a section of SLA 101 are taught separated by 1 hour (e.g., 10 AM & 12:00 Noon): + 0.25
+    #  A section of SLA 191 and a section of SLA 101 are taught in the same time slot: -0.25
     @staticmethod
     def activity_specific_adjustments_sla_191_and_sla_101_separated_by_1_hour(new_assignment, existing_assignments):
-        isSeparatedByOneHour = lambda a, b: (
-            (a == "10 AM" and b == "12 AM") or
-            (a == "11 AM" and b == "1 PM") or
-            (a == "12 PM" and b == "2 PM") or
-            (a == "1 PM" and b == "3 PM")
-        )
-        if new_assignment["activity"] == "SLA191":
+        new_assignment_activity = new_assignment["activity"]
+        new_assignment_is_101 = new_assignment_activity.startswith("SLA191")
+        new_assignment_is_191 = new_assignment_activity.startswith("SLA101")
+        if new_assignment_is_101 or new_assignment_is_191:
             for assignment in existing_assignments:
-                if assignment["activity"] == "SLA101":
-                    if isSeparatedByOneHour(assignment["time"], new_assignment["time"]) or isSeparatedByOneHour(new_assignment["time"], assignment["time"]):
+                current_activity = assignment["activity"]
+                current_is_101 = current_activity.startswith("SLA101")
+                current_is_191 = current_activity.startswith("SLA191")
+                if (current_is_101 and new_assignment_is_191) or (current_is_191 and new_assignment_is_101):
+                    if FitnessRules._is_separated_by_one_hour(assignment["time"], new_assignment["time"]):
                         return 0.25
                     elif assignment["time"] == new_assignment["time"]:
                         return -0.25
-        if new_assignment["activity"] == "SLA101":
-            for assignment in existing_assignments:
-                if assignment["activity"] == "SLA191":
-                    if isSeparatedByOneHour(assignment["time"], new_assignment["time"]) or isSeparatedByOneHour(new_assignment["time"], assignment["time"]):
-                        return 0.25
-                    elif assignment["time"] == new_assignment["time"]:
-                        return -0.25
+                # TODO: should this break after the first match?
         return 0
 
 def get_fitness(new_assignment, existing_assignments):
@@ -312,8 +357,7 @@ def get_fitness(new_assignment, existing_assignments):
     fitness += FitnessRules.facilitator_concurrent_load(new_assignment, existing_assignments)
     fitness += FitnessRules.facilitator_total_load(new_assignment, existing_assignments)
     fitness += FitnessRules.facilitator_consecutive_time_slots(new_assignment, existing_assignments)
-    fitness += FitnessRules.activity_specific_adjustments_sla_101(new_assignment, existing_assignments)
-    fitness += FitnessRules.activity_specific_adjustments_sla_191(new_assignment, existing_assignments)
+    fitness += FitnessRules.activity_specific_adjustments_sla(new_assignment, existing_assignments)
     fitness += FitnessRules.activity_specific_adjustments_sla_191_and_sla_101(new_assignment, existing_assignments)
     fitness += FitnessRules.activity_specific_adjustments_sla_191_and_sla_101_separated_by_1_hour(new_assignment, existing_assignments)
     return fitness
@@ -326,7 +370,7 @@ def get_random_assignments():
             "activity": activity["name"],
             "enrollment": activity["enrollment"],
             "facilitator": random.choice(activity["preferred_facilitators"]),
-            "room": random.choice(rooms)["name"],
+            "room": random.choice(list(roomCapacities.keys())),
             "time": random.choice(times)
         }
         assignments.append(assignment)
@@ -338,7 +382,10 @@ def get_schedule_fitness(assignments):
         fitness += get_fitness(assignments[i], assignments[:i])
     return fitness
 
-def generation(population):
+def get_average_population_fitness(population):
+    return sum([get_schedule_fitness(schedule) for schedule in population]) / len(population)
+
+def generation(population, mutation_probability):
     # Cull the least fit half of the population
     population.sort(key=lambda schedule: get_schedule_fitness(schedule), reverse=True)
     culled_population = population[:len(population) // 2]
@@ -350,7 +397,7 @@ def generation(population):
     # Repopulate the population
     new_population = []
     for i in range(len(culled_population) * 2):
-        isMutation = random.random() < 0.01
+        isMutation = random.random() < mutation_probability
         if isMutation:
             new_population.append(get_random_assignments())
         else:
@@ -365,31 +412,63 @@ def generation(population):
             new_population.append(child)
     return new_population
 
+def create_initial_population(size):
+    population = []
+    for i in range(size):
+        population.append(get_random_assignments())
+    return population
+
+def run_generations(
+    initial_population_size,
+    min_generations,
+    gmin_fitness_improvement_ratio,
+    mutation_probability
+):
+    data = {
+        "average_fitness_by_generation": [],
+        "ending_schedule": None,
+        "ending_fitness": None,
+    }
+    min_generations = 100
+    population = create_initial_population(initial_population_size)
+    last_average_fitness = get_average_population_fitness(population)
+    data["average_fitness_by_generation"].append(last_average_fitness)
+    fitness_improvement = 0
+    for i in range(min_generations):
+        population = generation(population, mutation_probability)
+        average_fitness = get_average_population_fitness(population)
+        data["average_fitness_by_generation"].append(average_fitness)
+        fitness_improvement = average_fitness - last_average_fitness
+        last_average_fitness = average_fitness
+    
+    fitness_improvement_gmin = fitness_improvement
+
+    print(f'Fitness improvement after minimum generations: {fitness_improvement_gmin}')
+
+    while fitness_improvement > gmin_fitness_improvement_ratio*fitness_improvement_gmin:
+        population = generation(population, mutation_probability)
+        average_fitness = get_average_population_fitness(population)
+        data["average_fitness_by_generation"].append(average_fitness)
+        fitness_improvement = average_fitness - last_average_fitness
+        last_average_fitness = average_fitness
+        print(f"Refining fitness improvement: {fitness_improvement}")
+    population.sort(key=lambda schedule: get_schedule_fitness(schedule), reverse=True)
+    data["ending_schedule"] = population[0]
+    return data
+
+
 @app.route("/api/genetic-algorithm")
 def run_algorithm():
-    initial_population_size = 500
-    initial_generations = 100
-    population = []
-    for i in range(initial_population_size):
-        population.append(get_random_assignments())
-    last_fitness = get_schedule_fitness(population[0])
-    fitness_improvement = 0
-    for i in range(initial_generations):
-        population = generation(population)
-        average_fitness = sum([get_schedule_fitness(schedule) for schedule in population]) / len(population)
-        fitness_improvement = average_fitness - last_fitness
-        last_fitness = average_fitness
-        print(f"Generation {i + 1} complete with {len(population)} schedules and an average fitness of {average_fitness}")
-    
-    fitness_improvement_g100 = fitness_improvement
+    initial_population_size = request.args.get('initial-population-size', default=500, type=int)
+    min_generations = request.args.get('min-generations', default=100, type=int)
+    gmin_fitness_improvement_ratio = request.args.get('gmin-fitness-improvement-ratio', default=0.01, type=float)
+    mutation_probability = request.args.get('mutation-probability', default=0.05, type=float)
+    data = run_generations(
+        initial_population_size,
+        min_generations,
+        gmin_fitness_improvement_ratio,
+        mutation_probability
+    )
 
-    print(f'Fitness improvement after 100 generations: {fitness_improvement_g100}')
 
-    while fitness_improvement > 0.01*fitness_improvement_g100:
-        population = generation(population)
-        average_fitness = sum([get_schedule_fitness(schedule) for schedule in population]) / len(population)
-        fitness_improvement = average_fitness - last_fitness
-        last_fitness = average_fitness
-        print(f"Generation {i + 1} complete with {len(population)} schedules and an average fitness of {average_fitness} and improvement of {fitness_improvement}")
-
-    return ""
+    return json.dumps(data)

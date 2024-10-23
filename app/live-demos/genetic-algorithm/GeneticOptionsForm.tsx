@@ -61,7 +61,7 @@ export function GeneticOptionsForm() {
                 />
               </FormControl>
               <FormDescription>
-                The starting number of random schedules included in the first generation's population.
+                The starting number of random schedules included in the first generation&apos;s population.
               </FormDescription>
               <FormMessage />
             </FormItem>

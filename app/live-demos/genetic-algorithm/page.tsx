@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GeneticOptionsForm } from "./GeneticOptionsForm";
 
 export default function GeneticAlgorithm() {
   const [response, setResponse] = useState<string | null>(null);
@@ -9,6 +10,8 @@ export default function GeneticAlgorithm() {
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex flex-col items-start gap-4">
+        <GeneticOptionsForm />
+
         <form
           className="flex flex-col justify-center rounded-lg space-y-4 w-full"
           action={async (formData: FormData) => {
@@ -29,6 +32,7 @@ export default function GeneticAlgorithm() {
             Test
           </button>
         </form>
+
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Response</CardTitle>

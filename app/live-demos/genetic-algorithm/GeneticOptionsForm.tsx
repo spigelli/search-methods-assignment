@@ -86,7 +86,11 @@ const defaultValues = Object.fromEntries(
   fieldConfigs.map((fieldConfig) => [fieldConfig.name, fieldConfig.defaultValue])
 );
 
-export function GeneticOptionsForm() {
+export function GeneticOptionsForm({
+  runAlgorithmAction,
+}: {
+  runAlgorithmAction: (formData: any) => void;
+}) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -125,9 +129,7 @@ export function GeneticOptionsForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={() => {
-          alert(form.getValues().initialPopulationSize);
-        }}
+        action={runAlgorithmAction}
         className="space-y-8"
       >
         {formFields}

@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useMemo } from "react";
 
 export const description = "A linear area chart"
 
@@ -30,19 +31,31 @@ const chartData = [
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  fitness: {
+    label: "Fitness",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function FitnessChart() {
+export function FitnessChart({
+  data
+}: {
+  data: number[]
+}) {
+
+  const formattedData = useMemo(() => (
+    data.map((fitness, index) => ({
+      generation: index + 1,
+      fitness,
+    }))
+  ), [data])
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart - Linear</CardTitle>
+        <CardTitle>Average Fitness By Generation</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          The averages for all schedules in the population for each generation.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -50,7 +63,7 @@ export function FitnessChart() {
           {/* @ts-ignore */}
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={formattedData}
             margin={{
               left: 12,
               right: 12,
@@ -58,27 +71,27 @@ export function FitnessChart() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="generation"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+              // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="dot" hideLabel />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="fitness"
               type="linear"
-              fill="var(--color-desktop)"
+              fill="var(--color-fitness)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-fitness)"
             />
           </AreaChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
+      {/* <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
@@ -89,7 +102,7 @@ export function FitnessChart() {
             </div>
           </div>
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }

@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import numpy as np
 from scipy.special import softmax
 import random
@@ -456,7 +456,6 @@ def run_generations(
     data["ending_schedule"] = population[0]
     return data
 
-
 @app.route("/api/genetic-algorithm")
 def run_algorithm():
     initial_population_size = request.args.get('initial-population-size', default=500, type=int)
@@ -471,4 +470,4 @@ def run_algorithm():
     )
 
 
-    return json.dumps(data)
+    return jsonify(data)

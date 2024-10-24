@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GeneticOptionsForm } from "./GeneticOptionsForm";
+import { FitnessChart } from "./FitnessChart";
 
 export default function GeneticAlgorithm() {
   const [response, setResponse] = useState<string | null>(null);
@@ -27,6 +28,7 @@ export default function GeneticAlgorithm() {
               <CardTitle>Response</CardTitle>
             </CardHeader>
             <CardContent>
+              <FitnessChart />
               <pre>{response}</pre>
             </CardContent>
           </Card>

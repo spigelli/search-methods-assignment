@@ -15,7 +15,6 @@ function formTooSmallMessage(minimum: number): string | undefined {
 function formTooLargeMessage(maximum: number): string | undefined {
   return `Initial population size must be at most ${maximum}.`;
 }
-
 const fieldConfigs = [
   {
     name: "initialPopulationSize" as const,
@@ -26,7 +25,8 @@ const fieldConfigs = [
     bounds: {
       min: 10,
       max: 9999,
-    }
+    },
+    defaultValue: 100,
   },
   {
     name: "minGenerations" as const,
@@ -38,6 +38,7 @@ const fieldConfigs = [
     },
     step: 1,
     isInt: true,
+    defaultValue: 100,
   },
   {
     name: "fitnessImprovementRatio" as const,
@@ -49,6 +50,7 @@ const fieldConfigs = [
     },
     step: 0.001,
     isInt: false,
+    defaultValue: 0.01,
   },
   {
     name: "mutationProbability" as const,
@@ -60,6 +62,7 @@ const fieldConfigs = [
     },
     step: 0.001,
     isInt: false,
+    defaultValue: 0.05,
   },
 ];
 
@@ -79,15 +82,14 @@ const formSchema = z.object(
   )
 );
 
+const defaultValues = Object.fromEntries(
+  fieldConfigs.map((fieldConfig) => [fieldConfig.name, fieldConfig.defaultValue])
+);
+
 export function GeneticOptionsForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      initialPopulationSize: 100,
-      minGenerations: 100,
-      fitnessImprovementRatio: 0.01,
-      mutationProbability: 0.05,
-    },
+    defaultValues,
   });
 
   const formFields = useMemo(() => {
@@ -129,10 +131,21 @@ export function GeneticOptionsForm() {
         className="space-y-8"
       >
         {formFields}
-        <Button type="submit">Submit</Button>
+        <div className="grid grid-cols-2 gap-4">
+          <Button type="submit">Submit</Button>
+          {form.formState.isDirty && (
+            <Button
+              onClick={() => {
+                form.reset();
+              }}
+              variant="secondary"
+            >
+              Set Defaults
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
-
   );
 }
 

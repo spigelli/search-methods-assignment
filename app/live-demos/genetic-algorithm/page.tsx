@@ -11,6 +11,14 @@ export default function GeneticAlgorithm() {
     <section dir="ltr" className="container h-full py-6">
       <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_300px]">
         <div className="hidden flex-col space-y-4 sm:flex md:order-2">
+          {/* <Card className="size-full">
+            <CardHeader>
+              <CardTitle>Configuration</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <GeneticOptionsForm />
+            </CardContent>
+          </Card> */}
           <GeneticOptionsForm />
         </div>
         <div className="md:order-1">

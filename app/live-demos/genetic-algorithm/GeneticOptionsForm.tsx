@@ -87,9 +87,9 @@ const defaultValues = Object.fromEntries(
 );
 
 export function GeneticOptionsForm({
-  runAlgorithmAction,
+  onSubmit,
 }: {
-  runAlgorithmAction: (formData: any) => void;
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
 }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -129,12 +129,17 @@ export function GeneticOptionsForm({
   return (
     <Form {...form}>
       <form
-        action={runAlgorithmAction}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8"
       >
         {formFields}
         <div className="grid grid-cols-2 gap-4">
-          <Button type="submit">Submit</Button>
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid || form.formState.isSubmitting || form.formState.isLoading}
+          >
+            Submit
+          </Button>
           {form.formState.isDirty && (
             <Button
               onClick={() => {

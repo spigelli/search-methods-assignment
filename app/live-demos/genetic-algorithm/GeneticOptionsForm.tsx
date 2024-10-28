@@ -77,13 +77,16 @@ const formSchema = z.object(
       if (isInt) {
         v = v.int();
       }
-      return [name, v];
+      return [
+        name,
+        z.array(v).length(1),
+      ];
     })
   )
 );
 
 const defaultValues = Object.fromEntries(
-  fieldConfigs.map((fieldConfig) => [fieldConfig.name, fieldConfig.defaultValue])
+  fieldConfigs.map((fieldConfig) => [fieldConfig.name, [fieldConfig.defaultValue]])
 );
 
 export function GeneticOptionsForm({
@@ -106,13 +109,13 @@ export function GeneticOptionsForm({
           name={name}
           render={({ field: { value, onChange } }) => (
             <FormItem>
-              <FormLabel>{label(value)}</FormLabel>
+              <FormLabel>{label(value[0])}</FormLabel>
               <FormControl>
                 <Slider
                   min={bounds.min}
                   max={bounds.max}
                   step={step}
-                  defaultValue={[value]}
+                  defaultValue={[value[0]]}
                   onValueChange={onChange}
                 />
               </FormControl>
@@ -136,7 +139,7 @@ export function GeneticOptionsForm({
         <div className="grid grid-cols-2 gap-4">
           <Button
             type="submit"
-            disabled={!form.formState.isValid || form.formState.isSubmitting || form.formState.isLoading}
+            disabled={form.formState.isValid === false || form.formState.isLoading || form.formState.isSubmitting}
           >
             Submit
           </Button>

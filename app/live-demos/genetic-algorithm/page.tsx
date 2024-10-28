@@ -65,11 +65,11 @@ export default function GeneticAlgorithm() {
           </Card>
           ) : (
             <div className="flex flex-col gap-6 pb-6">
-              <FitnessChart
-                data={data.average_fitness_by_generation}
-              />
               <ScheduleTable
                 schedule={data.ending_schedule}
+              />
+              <FitnessChart
+                data={data.average_fitness_by_generation}
               />
             </div>
           )}
